@@ -1,3 +1,15 @@
+function App(props) {
+  const {counter} = props
+  return (
+    <div>
+      <div>{counter}</div>
+    </div>
+  )
+}
+
+export default App
+
+/*
 function App() {
   const course = {
     name: "Half Stack application development",
@@ -59,3 +71,4 @@ function App() {
 }
 
 export default App
+*/
