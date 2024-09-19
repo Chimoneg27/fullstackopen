@@ -21,6 +21,7 @@ function App() {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
+
   return (
     <div>
       <h1>give feedback</h1>
@@ -34,6 +35,8 @@ function App() {
       <Paragraph text={'good'} rating={good}/>
       <Paragraph text={'neutral'} rating={neutral}/>
       <Paragraph text={'bad'} rating={bad}/>
+      <Paragraph text={'average'} rating={(bad + good + neutral) / 3}/>
+      <Paragraph text={'positive'} rating={good / (bad + good + neutral) * 100}/>
     </div>
   )
 }
