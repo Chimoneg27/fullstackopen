@@ -16,6 +16,19 @@ const Paragraph = (props) => {
   )
 }
 
+const Statistics = ({title, good, neutral, bad}) => {
+  return (
+    <div>
+      <h2>{title}</h2>
+      <Paragraph text={'good'} rating={good}/>
+      <Paragraph text={'neutral'} rating={neutral}/>
+      <Paragraph text={'bad'} rating={bad}/>
+      <Paragraph text={'average'} rating={(bad + good + neutral) / 3}/>
+      <Paragraph text={'positive'} rating={(bad + good + neutral) === 0 ? '0%' : `${(good / (bad + good + neutral)) * 100}%`} />
+    </div>
+  )
+}
+
 function App() {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
@@ -30,13 +43,7 @@ function App() {
       <Button text='neutral' handleClick={() =>setNeutral(neutral + 1)}/>
       <Button text='bad' handleClick={() =>setBad(bad + 1)}/>
 
-      <h2>statistics</h2>
-
-      <Paragraph text={'good'} rating={good}/>
-      <Paragraph text={'neutral'} rating={neutral}/>
-      <Paragraph text={'bad'} rating={bad}/>
-      <Paragraph text={'average'} rating={(bad + good + neutral) / 3}/>
-      <Paragraph text={'positive'} rating={good / (bad + good + neutral) * 100}/>
+      <Statistics title='statistics' good={good} bad={bad} neutral={neutral}/>
     </div>
   )
 }
