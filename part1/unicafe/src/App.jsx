@@ -1,17 +1,17 @@
 import { useState } from 'react'
 
-const Button = (props) => {
+const Button = ({text, handleClick}) => {
   return (
-    <button onClick={props.handleClick}>
-      {props.text}
+    <button onClick={handleClick}>
+      {text}
     </button>
   )
 }
 
-const Paragraph = (props) => {
+const StatisticLine = ({text, value}) => {
   return (
     <p>
-      {props.text} {props.rating}
+      {text} {value}
     </p>
   )
 }
@@ -26,11 +26,11 @@ const Statistics = ({title, good, neutral, bad}) => {
   return (
     <div>
       <h2>{title}</h2>
-      <Paragraph text={'good'} rating={good}/>
-      <Paragraph text={'neutral'} rating={neutral}/>
-      <Paragraph text={'bad'} rating={bad}/>
-      <Paragraph text={'average'} rating={(bad + good + neutral) / 3}/>
-      <Paragraph text={'positive'} rating={(bad + good + neutral) === 0 ? '0%' : `${(good / (bad + good + neutral)) * 100}%`} />
+      <StatisticLine text={'good'} value={good}/>
+      <StatisticLine text={'neutral'} value={neutral}/>
+      <StatisticLine text={'bad'} value={bad}/>
+      <StatisticLine text={'average'} value={(bad + good + neutral) / 3}/>
+      <StatisticLine text={'positive'} value={(bad + good + neutral) === 0 ? '0%' : `${(good / (bad + good + neutral)) * 100}%`} />
     </div>
   )
 }
