@@ -17,6 +17,12 @@ const Paragraph = (props) => {
 }
 
 const Statistics = ({title, good, neutral, bad}) => {
+  if(good === 0 && neutral === 0 && bad === 0) {
+    return (
+      <h2>No feedback given</h2>
+    )
+  }
+
   return (
     <div>
       <h2>{title}</h2>
