@@ -31,13 +31,23 @@ function App() {
     setVotes(votesCopy)
   }
 
+  let max = Math.max(...votes);
+  let index = votes.indexOf(max)
+
   return (
     <div>
+        <h2>Anecdote of the day</h2>
+
       <Anecdote quote={anecdotes[selected]} />
-      <Anecdote quote={votes[selected]}/>
+      <Anecdote quote={`has ${votes[selected]} votes`}/>
 
       <Button text={'vote'} handleClick={() => handleVotes()}/>
       <Button text={'next anecdote'} handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))}/>
+
+      <h2>Anecdote with the most votes</h2>
+
+      <Anecdote quote={anecdotes[index]}/>
+      <Anecdote quote={`has ${votes[index]} votes`}/>
     </div>
   )
 }
