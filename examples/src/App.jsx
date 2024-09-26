@@ -1,9 +1,5 @@
-// import { useState } from 'react'
-const Note = ({ note }) => {
-  return (
-    <li>{note.content}</li>
-  )
-}
+import Note from './Components/Note'
+
 
 function App({ notes }) {
 
