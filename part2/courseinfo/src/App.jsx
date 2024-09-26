@@ -6,10 +6,12 @@ const Course = ({ course }) => {
     <ul>
       {course.parts.map(
         (lesson) => {
-          return <li key={lesson.id}>{lesson.name}</li>
+          return <li key={lesson.id}>{lesson.name} {lesson.exercises}</li>
         }
       )}
     </ul>
+
+    <p>total of {course.parts.reduce((total, num) => total + num.exercises,0)} exercises</p>
     </>
   )
 }
