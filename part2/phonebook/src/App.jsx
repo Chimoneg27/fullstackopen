@@ -17,7 +17,7 @@ function App() {
   const handleNameChange = (e) => {
     setNewName(e.target.value)
   }
-  console.log(persons)
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -35,6 +35,12 @@ function App() {
         </div>
       </form>
       <h2>Numbers</h2>
+
+      <ul>
+        {persons.map((person) => {
+          return <li key={person.name}>{person.name}</li>
+        })}
+      </ul>
       <div>
         </div>
     </div>
