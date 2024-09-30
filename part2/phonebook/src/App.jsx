@@ -8,6 +8,13 @@ function App() {
 
   const submitName = (e) => {
     e.preventDefault()
+
+    const nameInPhonebook = persons.some((obj) => obj.name === newName)
+
+    if(nameInPhonebook === true) {
+      return alert(`${newName} is already in the phonebook`)
+    }
+
     setPersons(persons.concat({
       name: newName
     }))
