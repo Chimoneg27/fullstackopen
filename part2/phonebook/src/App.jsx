@@ -9,6 +9,7 @@ function App() {
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [searchResult, setSearchResult] = useState('')
 
   const submitName = (e) => {
     e.preventDefault()
@@ -35,9 +36,23 @@ function App() {
     setNewNumber(e.target.value);
   };
 
+  const filterSearch = (e) => {
+    setSearchResult(e.target.value)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <div>
+        filter shown with a: <input 
+          type="text"
+          value={searchResult}
+          onChange={filterSearch}
+        />
+      </div>
+
+      <h2>Add A New</h2>
 
       <form>
         <div>
