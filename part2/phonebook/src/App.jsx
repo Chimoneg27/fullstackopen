@@ -10,6 +10,7 @@ function App() {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchResult, setSearchResult] = useState('')
+  const [filterPersons, setFilterPersons] = useState(persons)
 
   const submitName = (e) => {
     e.preventDefault()
@@ -24,6 +25,13 @@ function App() {
       name: newName,
       number: newNumber
     }))
+
+    setFilterPersons(persons.concat({
+      name: newName,
+      number: newNumber
+    }))
+    // both the filtered and original state should be updated at the same time
+
     setNewName('')
     setNewNumber('')
   }
@@ -37,7 +45,15 @@ function App() {
   };
 
   const filterSearch = (e) => {
-    setSearchResult(e.target.value)
+    const searchTerm = e.target.value // we target the input for the search field
+    setSearchResult(searchTerm) // this sets the search result/keeps track of it
+
+    const filtered = persons.filter((person) => {
+      //here we filter out the letters in the input field from the filtered input
+      return person.name.toLowerCase().includes(searchTerm.toLowerCase())
+    })
+
+    setFilterPersons(filtered)
   }
 
   return (
@@ -76,7 +92,7 @@ function App() {
       <h2>Numbers</h2>
 
       <ul>
-        {persons.map((person) => {
+        {filterPersons.map((person) => {
           return <li key={person.name}>{person.name} {person.number}</li>
         })}
       </ul>
