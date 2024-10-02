@@ -84,8 +84,6 @@ function App() {
           return <li key={person.name}>{person.name} {person.number}</li>
         })}
       </ul>
-      <div>
-        </div>
     </div>
   )
 }
