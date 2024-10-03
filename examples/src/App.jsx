@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import Note from './Components/Note'
 
-function App(props) {
-  const [notes, setNotes] = useState(props.notes)
+function App() {
+  const [notes, setNotes] = useState(notes)
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
 
