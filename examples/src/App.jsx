@@ -17,16 +17,17 @@ const App = () => {
 
   const addNote = (e) => {
     e.preventDefault()
-    // prevent the default submission which causes the page to refresh
+
     const noteObj = {
       content: newNote,
-      important: Math.random < 0.5,
+      important: Math.random() < 0.5,
     }
     
     axios
       .post('http://localhost:3001/notes', noteObj)
       .then(response => {
-        console.log(response)
+        setNotes(notes.concat(response.data))
+        setNewNote('')
       })
   }
 
