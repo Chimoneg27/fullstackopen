@@ -21,20 +21,13 @@ const App = () => {
     const noteObj = {
       content: newNote,
       important: Math.random < 0.5,
-      id: String(notes.length + 1)
     }
-    // this is the contents of the newly created note
-
-    setNotes(notes.concat(noteObj))
-    /* 
-    The method does not mutate the original notes array, but rather 
-    creates a new copy of the array with the new item added 
-    to the end. This is important since we must never mutate 
-    state directly in React!
-    */
-    //here we concat/add the new note to the existing notes array
-    setNewNote('')
-    //turns the input field blank after submission
+    
+    axios
+      .post('http://localhost:3001/notes', noteObj)
+      .then(response => {
+        console.log(response)
+      })
   }
 
   const handleNoteChange = (e) => {
