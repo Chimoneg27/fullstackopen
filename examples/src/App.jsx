@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Note from './Components/Note'
+import noteService from './services/notes'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -8,8 +8,8 @@ const App = () => {
   const [showAll, setShowAll] = useState(true)
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/notes')
+    noteService
+      .getAll()
       .then(response => {
         setNotes(response.data)
       }, [])
@@ -23,8 +23,8 @@ const App = () => {
       important: Math.random() > 0.5,
     }
     
-    axios
-      .post('http://localhost:3001/notes', noteObj)
+    noteService
+      .create(noteObj)
       .then(response => {
         setNotes(notes.concat(response.data))
         setNewNote('')
@@ -36,22 +36,12 @@ const App = () => {
   }
 
   const toggleImportanceOf = (id) => {
-    const url = `http://localhost:3001/notes/${id}`
     const note = notes.find(n => n.id === id)
-    // Here we use the find() array method to target the note with the specific id
   
     const changedNote = { ...note, important: !note.important }
-    // Here we create a new note object with the same properties as the original note,
-    // but with the 'important' property toggled (true to false or vice-versa)
   
-    axios.put(url, changedNote).then(response => {
-      // The put method sends a request to update the note at the specified URL with the changedNote object
-      // Once the request is successful, we update our local state
-  
+    noteService.update(id, changedNote).then(response => {
       setNotes(notes.map(n => n.id !== id ? n : response.data))
-      // We use the map() array method to create a new array of notes
-      // If the note's id does not match the id we are toggling, we keep it unchanged
-      // If the note's id matches, we replace it with the updated note from the server response
     })
   }
 
