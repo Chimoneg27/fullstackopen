@@ -19,17 +19,17 @@ function App() {
     if(nameInPhonebook === true) {
       return alert(`${newName} is already in the phonebook`)
     }
-
-    setPersons(persons.concat({
+    const url = 'http://localhost:3001/persons'
+    const newObj = {
       name: newName,
       number: newNumber
-    }))
+    }
 
-    setFilterPersons(persons.concat({
-      name: newName,
-      number: newNumber
-    }))
-    // both the filtered and original state should be updated at the same time
+    axios.post(url, newObj)
+    .then(response => {
+      setPersons(persons.concat(response.data))
+      setFilterPersons(persons.concat(response.data))
+    })
 
     setNewName('')
     setNewNumber('')
