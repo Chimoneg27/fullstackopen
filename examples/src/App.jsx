@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react'
 import Note from './Components/Note'
 import noteService from './services/notes'
@@ -40,9 +41,16 @@ const App = () => {
   
     const changedNote = { ...note, important: !note.important }
   
-    noteService.update(id, changedNote).then(returnedNote => {
-      setNotes(notes.map(n => n.id !== id ? n : returnedNote))
-    })
+    noteService
+      .update(id, changedNote).then(returnedNote => {
+        setNotes(notes.map(n => n.id !== id ? n : returnedNote))
+      })
+      .catch(error => {
+        alert(
+          `the note ${note.content} was already deleted form the server`
+        )
+        setNotes(notes.filter(n => n.id !== id))
+      })
   }
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
