@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react'
-import Form from './components/Form'
-import Filter from './components/Filter'
-import Persons from './components/Persons'
-import personService from './services/persons'
+import { useState, useEffect } from "react"
+import Form from "./components/Form"
+import Filter from "./components/Filter"
+import Persons from "./components/Persons"
+import personService from "./services/persons"
 
 function App() {
   const [persons, setPersons] = useState([])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [searchResult, setSearchResult] = useState('')
+  const [newName, setNewName] = useState("")
+  const [newNumber, setNewNumber] = useState("")
+  const [searchResult, setSearchResult] = useState("")
   const [filterPersons, setFilterPersons] = useState(persons)
 
   const submitName = (e) => {
@@ -16,7 +16,7 @@ function App() {
 
     const nameInPhonebook = persons.some((obj) => obj.name === newName)
 
-    if(nameInPhonebook === true) {
+    if (nameInPhonebook === true) {
       return alert(`${newName} is already in the phonebook`)
     }
 
@@ -25,15 +25,13 @@ function App() {
       number: newNumber
     }
 
-    personService
-    .create(newObj)
-    .then(response => {
+    personService.create(newObj).then((response) => {
       setPersons(persons.concat(response))
       setFilterPersons(persons.concat(response))
     })
 
-    setNewName('')
-    setNewNumber('')
+    setNewName("")
+    setNewNumber("")
   }
 
   const handleNameChange = (e) => {
@@ -41,8 +39,8 @@ function App() {
   }
 
   const handleNumChange = (e) => {
-    setNewNumber(e.target.value);
-  };
+    setNewNumber(e.target.value)
+  }
 
   const filterSearch = (e) => {
     const searchTerm = e.target.value // we target the input for the search field
@@ -57,27 +55,29 @@ function App() {
   }
 
   useEffect(() => {
-    personService.
-     getAll()
-     .then(initialPersons => {
+    personService.getAll().then((initialPersons) => {
       setPersons(initialPersons)
       setFilterPersons(initialPersons)
-     })
-  }, 
-  [])
+    })
+  }, [])
+
+  const deletePerson = (e) => {
+    const id = e.target.id
+    personService.remove(id).then(() => {
+      setPersons((prevPersons) => prevPersons.filter((p) => p.id !== id))
+      setFilterPersons((prevFilterPersons) => prevFilterPersons.filter((p) => p.id !== id))
+    })
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
 
-      <Filter 
-        value={searchResult}
-        onChange={filterSearch}
-      />
+      <Filter value={searchResult} onChange={filterSearch} />
 
       <h2>Add A New</h2>
 
-      <Form 
+      <Form
         name={newName}
         number={newNumber}
         onChangeName={handleNameChange}
@@ -87,9 +87,7 @@ function App() {
 
       <h2>Numbers</h2>
 
-      <Persons 
-        personsArray={filterPersons}
-      />
+      <Persons personsArray={filterPersons} removePerson={deletePerson} />
     </div>
   )
 }
