@@ -63,10 +63,14 @@ function App() {
 
   const deletePerson = (e) => {
     const id = e.target.id
-    personService.remove(id).then(() => {
-      setPersons((prevPersons) => prevPersons.filter((p) => p.id !== id))
-      setFilterPersons((prevFilterPersons) => prevFilterPersons.filter((p) => p.id !== id))
-    })
+    const name = e.target.getAttribute('data');
+
+    if (window.confirm(`Delete ${name} ?`)) {
+      personService.remove(id).then(() => {
+        setPersons((prevPersons) => prevPersons.filter((p) => p.id !== id))
+        setFilterPersons((prevFilterPersons) => prevFilterPersons.filter((p) => p.id !== id))
+      })
+    }
   }
 
   return (

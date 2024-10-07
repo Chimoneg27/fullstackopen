@@ -5,7 +5,7 @@ const Persons = ({ personsArray, removePerson }) => {
         return (
           <li key={person.name}>
             {person.name} {person.number}
-            <button id={person.id} onClick={removePerson}>delete</button>
+            <button id={person.id} data={person.name} onClick={removePerson}>delete</button>
           </li>
         )
       })}
