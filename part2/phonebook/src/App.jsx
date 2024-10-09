@@ -4,7 +4,7 @@ import Filter from "./components/Filter"
 import Persons from "./components/Persons"
 import personService from "./services/persons"
 
-function App() {
+const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
