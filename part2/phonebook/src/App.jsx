@@ -15,9 +15,22 @@ function App() {
     e.preventDefault()
 
     const nameInPhonebook = persons.some((obj) => obj.name === newName)
-
+    const numInPhonebook = persons.some((obj) => obj.number === newNumber)
+    const id = e.target.id
+    const name = persons.find(p => p.number === numInPhonebook)
+    const updatePerson = {...name, number:newNumber }
+  
     if (nameInPhonebook === true) {
       return alert(`${newName} is already in the phonebook`)
+    }
+
+    if (numInPhonebook === false) {
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        personService.update(id, updatePerson)
+        .then(returnPerson => {
+          setPersons(persons.map(p => p.id !== id ? p : returnPerson))
+        })
+      }
     }
 
     const newObj = {
@@ -43,11 +56,10 @@ function App() {
   }
 
   const filterSearch = (e) => {
-    const searchTerm = e.target.value // we target the input for the search field
-    setSearchResult(searchTerm) // this sets the search result/keeps track of it
+    const searchTerm = e.target.value
+    setSearchResult(searchTerm)
 
     const filtered = persons.filter((person) => {
-      //here we filter out the letters in the input field from the filtered input
       return person.name.toLowerCase().includes(searchTerm.toLowerCase())
     })
 
@@ -63,7 +75,7 @@ function App() {
 
   const deletePerson = (e) => {
     const id = e.target.id
-    const name = e.target.getAttribute('data');
+    const name = e.target.getAttribute("data")
 
     if (window.confirm(`Delete ${name} ?`)) {
       personService.remove(id).then(() => {
