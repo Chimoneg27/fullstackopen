@@ -32,6 +32,12 @@ const App = () => {
         personService.update(id, updatePerson)
         .then(returnPerson => {
           setPersons(persons.map(p => p.id !== id ? p : returnPerson))
+          setAddedMsg(
+            `Added ${updatePerson.name}`
+          )
+          setTimeout(() => {
+            setAddedMsg(null)
+          }, 5000)
         })
       }
     }
@@ -44,6 +50,12 @@ const App = () => {
     personService.create(newObj).then((response) => {
       setPersons(persons.concat(response))
       setFilterPersons(persons.concat(response))
+      setAddedMsg(
+        `Added ${response.name}`
+      )
+      setTimeout(() => {
+        setAddedMsg(null)
+      }, 5000)
     })
 
     setNewName("")
