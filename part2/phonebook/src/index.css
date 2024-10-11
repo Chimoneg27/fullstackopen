@@ -1,5 +1,5 @@
-.error {
-  color: red;
+.added {
+  color: rgba(34, 148, 11, 0.658);
   background: lightgrey;
   font-size: 20px;
   border-style: solid;

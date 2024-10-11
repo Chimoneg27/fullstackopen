@@ -3,6 +3,7 @@ import Form from "./components/Form"
 import Filter from "./components/Filter"
 import Persons from "./components/Persons"
 import personService from "./services/persons"
+import Notification from "./components/Notification"
   import './index.css'
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [searchResult, setSearchResult] = useState("")
   const [filterPersons, setFilterPersons] = useState(persons)
+  const [addedMsg, setAddedMsg] = useState('just added a new number')
 
   const submitName = (e) => {
     e.preventDefault()
@@ -89,6 +91,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={addedMsg}/>
 
       <Filter value={searchResult} onChange={filterSearch} />
 
