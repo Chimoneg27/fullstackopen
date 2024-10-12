@@ -4,7 +4,7 @@ import Filter from "./components/Filter"
 import Persons from "./components/Persons"
 import personService from "./services/persons"
 import Notification from "./components/Notification"
-  import './index.css'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -18,29 +18,11 @@ const App = () => {
     e.preventDefault()
 
     const nameInPhonebook = persons.some((obj) => obj.name === newName)
-    const numInPhonebook = persons.some((obj) => obj.number === newNumber)
-    const id = e.target.id
-    const name = persons.find(p => p.number === numInPhonebook)
-    const updatePerson = {...name, number:newNumber }
   
     if (nameInPhonebook === true) {
       return alert(`${newName} is already in the phonebook`)
     }
 
-    if (numInPhonebook === false) {
-      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
-        personService.update(id, updatePerson)
-        .then(returnPerson => {
-          setPersons(persons.map(p => p.id !== id ? p : returnPerson))
-          setAddedMsg(
-            `Added ${updatePerson.name}`
-          )
-          setTimeout(() => {
-            setAddedMsg(null)
-          }, 5000)
-        })
-      }
-    }
 
     const newObj = {
       name: newName,
