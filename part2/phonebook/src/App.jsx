@@ -55,6 +55,8 @@ const App = () => {
     .update(nameId, nameObj)
     .then((returnedPerson) => 
       {
+        //the returned persons is the response from the server
+        //in the setpersons function we check if the ids match, if they don't we update the person, if they do we keep the person the same
         setPersons(persons.map(person => person.id !== nameId ? person : returnedPerson))
         setFilterPersons(persons.map(person => person.id !== nameId ? person : returnedPerson))
       }
