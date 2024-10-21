@@ -12,7 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [searchResult, setSearchResult] = useState("")
   const [filterPersons, setFilterPersons] = useState(persons)
-  const [addedMsg, setAddedMsg] = useState('just added a new number')
+  const [addedMsg, setAddedMsg] = useState('')
 
   const submitName = (e) => {
     e.preventDefault()
@@ -29,6 +29,12 @@ const App = () => {
       const confirm = window.confirm(msg)
       if(confirm) {
         updateName(newObj)
+        setAddedMsg(
+          `Updated ${newObj.name}'s number`
+        )
+        setTimeout(() => {
+          setAddedMsg(null)
+        }, 5000)
       }
     } else {
       personService.create(newObj).then((response) => {
