@@ -11,19 +11,14 @@
       "id": "4"
     },
     {
-      "id": "db41",
       "name": "Peter",
-      "number": "1244"
+      "number": "0000",
+      "id": "db41"
     },
     {
       "id": "9d29",
       "name": "Mori Jin",
       "number": "1-8000-GOH"
-    },
-    {
-      "id": "e343",
-      "name": "Bro",
-      "number": "1800"
     }
   ]
 }

@@ -25,27 +25,41 @@ const App = () => {
     const nameInPhonebook = persons.map(person => person.name)
   
     if (nameInPhonebook.includes(newName)) {
-      return alert(`${newName} is already in the phonebook`)
+      const msg = `${newName} is already in the phonebook. Do you want to update the number?`
+      const confirm = window.confirm(msg)
+      if(confirm) {
+        updateName(newObj)
+      }
+    } else {
+      personService.create(newObj).then((response) => {
+        setPersons(persons.concat(response))
+        setFilterPersons(persons.concat(response))
+        setAddedMsg(
+          `Added ${response.name}`
+        )
+        setTimeout(() => {
+          setAddedMsg(null)
+        }, 5000)
+      })
     }
-
-    personService.create(newObj).then((response) => {
-      setPersons(persons.concat(response))
-      setFilterPersons(persons.concat(response))
-      setAddedMsg(
-        `Added ${response.name}`
-      )
-      setTimeout(() => {
-        setAddedMsg(null)
-      }, 5000)
-    })
 
     setNewName("")
     setNewNumber("")
   }
 
-  // const updateName = (nameObj) => {
-  //   const nameToUpdate = 
-  // }
+  const updateName = (nameObj) => {
+    const nameToUpdate = persons.find(p => p.name === nameObj.name)
+    const nameId = nameToUpdate.id
+
+    personService
+    .update(nameId, nameObj)
+    .then((returnedPerson) => 
+      {
+        setPersons(persons.map(person => person.id !== nameId ? person : returnedPerson))
+        setFilterPersons(persons.map(person => person.id !== nameId ? person : returnedPerson))
+      }
+    )
+  }
 
   const handleNameChange = (e) => {
     setNewName(e.target.value)
