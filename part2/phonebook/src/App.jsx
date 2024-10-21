@@ -12,7 +12,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [searchResult, setSearchResult] = useState("")
   const [filterPersons, setFilterPersons] = useState(persons)
-  const [addedMsg, setAddedMsg] = useState('')
+  const [addedMsg, setAddedMsg] = useState(null)
+  const [classMsg, setClassMsg] = useState('')
 
   const submitName = (e) => {
     e.preventDefault()
@@ -29,6 +30,7 @@ const App = () => {
       const confirm = window.confirm(msg)
       if(confirm) {
         updateName(newObj)
+        setClassMsg('added')
         setAddedMsg(
           `Updated ${newObj.name}'s number`
         )
@@ -40,6 +42,7 @@ const App = () => {
       personService.create(newObj).then((response) => {
         setPersons(persons.concat(response))
         setFilterPersons(persons.concat(response))
+        setClassMsg('added')
         setAddedMsg(
           `Added ${response.name}`
         )
@@ -66,7 +69,14 @@ const App = () => {
         setPersons(persons.map(person => person.id !== nameId ? person : returnedPerson))
         setFilterPersons(persons.map(person => person.id !== nameId ? person : returnedPerson))
       }
-    )
+    ).catch(error => {
+      setAddedMsg(`${nameObj.name} not found. ${error}`)
+      setClassMsg('error')
+      setTimeout(() => {
+        setAddedMsg(null)
+      }, 5000)
+      setPersons(persons.filter(p => p.id !== nameId))
+    })
   }
 
   const handleNameChange = (e) => {
@@ -110,7 +120,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={addedMsg}/>
+      <Notification message={addedMsg} type={classMsg}/>
 
       <Filter value={searchResult} onChange={filterSearch} />
 
