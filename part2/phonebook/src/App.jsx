@@ -17,16 +17,15 @@ const App = () => {
   const submitName = (e) => {
     e.preventDefault()
 
-    const nameInPhonebook = persons.some((obj) => obj.name === newName)
-  
-    if (nameInPhonebook === true) {
-      return alert(`${newName} is already in the phonebook`)
-    }
-
-
     const newObj = {
       name: newName,
       number: newNumber
+    }
+
+    const nameInPhonebook = persons.map(person => person.name)
+  
+    if (nameInPhonebook.includes(newName)) {
+      return alert(`${newName} is already in the phonebook`)
     }
 
     personService.create(newObj).then((response) => {
@@ -43,6 +42,10 @@ const App = () => {
     setNewName("")
     setNewNumber("")
   }
+
+  // const updateName = (nameObj) => {
+  //   const nameToUpdate = 
+  // }
 
   const handleNameChange = (e) => {
     setNewName(e.target.value)
