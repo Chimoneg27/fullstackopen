@@ -13,6 +13,12 @@ function App() {
       ), []
   })
 
+  // const onSearchCountry = (e) => {
+  //   e.preventD
+  // }
+
+
+
   return (
     <div>
       <h1>Data for Countries</h1>
@@ -20,7 +26,18 @@ function App() {
       <Filter />
 
       <div>
-       Countries go here
+        {country.map((nation) => {
+          return (
+            <div key={nation.name.official}>
+              <h2 key={nation.name.official}>{nation.name.official}</h2>
+
+              <p>capital {nation.capital}</p>
+              <p>area {nation.area}</p>
+        
+              <h2>Languages</h2>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
