@@ -5,6 +5,8 @@ import './styles/app.css'
 
 function App() {
   const [country, setCountry] = useState([])
+  const [filterCountry, setFilterCountry] = useState([])
+  const [countryName, setCountryName] = useState("")
 
   useEffect(() => {
     axios
@@ -15,9 +17,20 @@ function App() {
       });
   }, []);
 
-  // const onSearchCountry = (e) => {
-  //   e.preventD
-  // }
+  const onSearchCountry = (e) => {
+    const searchName = e.target.value
+    setCountryName(searchName)
+
+    const filtered = country.filter((nation) => {
+      return nation.name.official.toLowerCase().includes(searchName.toLowerCase())
+    })
+
+    if(filtered.length <= 10) {
+      setFilterCountry(filtered)
+    } else {
+      setFilterCountry([])
+    }
+  }
 
 const objToArr = (obj) => {
   if (!obj) return <li>No languages available</li>
@@ -33,10 +46,11 @@ const objToArr = (obj) => {
     <div>
       <h1>Data for Countries</h1>
 
-      <Filter />
-
+      <Filter value={countryName} onChange={onSearchCountry}/>
+      
+      {filterCountry.length === 0 || countryName === "" ? <p>Too many cases, specify further</p> :
       <div>
-        {country.map((nation) => {
+        {filterCountry.map((nation) => {
           return (
             <div key={nation.name.official}>
               <h2 key={nation.name.official}>{nation.name.official}</h2>
@@ -55,7 +69,7 @@ const objToArr = (obj) => {
             </div>
           )
         })}
-      </div>
+      </div>}
     </div>
   )
 }
