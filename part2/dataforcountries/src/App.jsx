@@ -34,7 +34,7 @@ function App() {
               <p>capital {nation.capital}</p>
               <p>area {nation.area}</p>
         
-              <h2>Languages</h2>
+              <h3>Languages</h3>
             </div>
           )
         })}
