@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Filter from './Components/Filter'
 import axios from 'axios'
+import './styles/app.css'
 
 function App() {
   const [country, setCountry] = useState([])
@@ -28,7 +29,6 @@ const objToArr = (obj) => {
   return newArr
 }
 
-
   return (
     <div>
       <h1>Data for Countries</h1>
@@ -48,6 +48,10 @@ const objToArr = (obj) => {
               <ul>
                 {objToArr(nation.languages)}
               </ul>
+
+              <h3>Flag</h3>
+
+              <img src={nation.flags.png} alt={nation.flags.alt} />
             </div>
           )
         })}
