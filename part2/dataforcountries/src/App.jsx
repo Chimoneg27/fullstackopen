@@ -8,15 +8,25 @@ function App() {
   useEffect(() => {
     axios
       .get('https://studies.cs.helsinki.fi/restcountries/api/all')
-      .then(response =>
+      .then(response => {
         setCountry(response.data)
-      ), []
-  })
+        console.log(response.data[0].languages)
+      });
+  }, []);
 
   // const onSearchCountry = (e) => {
   //   e.preventD
   // }
 
+const objToArr = (obj) => {
+  if (!obj) return <li>No languages available</li>
+  const objArr = Object.values(obj)
+  const newArr = objArr.map((val) => (
+    <li key={val}>{val}</li>
+  ))
+
+  return newArr
+}
 
 
   return (
@@ -35,6 +45,9 @@ function App() {
               <p>area {nation.area}</p>
         
               <h3>Languages</h3>
+              <ul>
+                {objToArr(nation.languages)}
+              </ul>
             </div>
           )
         })}
