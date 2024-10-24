@@ -26,11 +26,11 @@ function App() {
       return nation.name.official.toLowerCase().includes(searchName.toLowerCase())
     })
 
-    if(filtered.length <= 10) {
+    // if(filtered.length <= 10) {
       setFilterCountry(filtered)
-    } else {
-      setFilterCountry([])
-    }
+    // } else {
+    //   setFilterCountry([])
+    // }
   }
 
 const objToArr = (obj) => {
@@ -43,13 +43,27 @@ const objToArr = (obj) => {
   return newArr
 }
 
+  const conditions = (arr) => {
+    if(countryName === "") {
+      return <p>Enter a country</p>
+    } else if(arr.length > 10) {
+      return <p>Too many cases, specify further</p>
+    } else if(arr.length <= 10 && arr.length > 1) {
+      return arr.map(nation => <p key={nation.name.official}>{nation.name.official}</p>)
+    } else {
+      return <Countries countryArr={arr} objFunc={objToArr}/>
+    }
+  }
+
   return (
     <div>
       <h1>Data for Countries</h1>
 
       <Filter value={countryName} onChange={onSearchCountry}/>
-      
-      {filterCountry.length === 0 || countryName === "" ? <p>Too many cases, specify further</p> : <Countries countryArr={filterCountry} objFunc={objToArr}/>}
+
+      <div>
+        {conditions(filterCountry)}
+      </div>
     </div>
   )
 }
