@@ -1,4 +1,4 @@
-const Country = ({ countryArr, objFunc }) => {
+const Countries = ({ countryArr, objFunc }) => {
   return (
     <div>
     {countryArr.map((nation) => {
@@ -24,4 +24,4 @@ const Country = ({ countryArr, objFunc }) => {
   )
 }
 
-export default Country
+export default Countries

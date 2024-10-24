@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Filter from './Components/Filter'
+import Countries from './Components/Countries'
 import axios from 'axios'
 import './styles/app.css'
 
@@ -48,28 +49,7 @@ const objToArr = (obj) => {
 
       <Filter value={countryName} onChange={onSearchCountry}/>
       
-      {filterCountry.length === 0 || countryName === "" ? <p>Too many cases, specify further</p> :
-      <div>
-        {filterCountry.map((nation) => {
-          return (
-            <div key={nation.name.official}>
-              <h2 key={nation.name.official}>{nation.name.official}</h2>
-
-              <p>capital {nation.capital}</p>
-              <p>area {nation.area}</p>
-        
-              <h3>Languages</h3>
-              <ul>
-                {objToArr(nation.languages)}
-              </ul>
-
-              <h3>Flag</h3>
-
-              <img src={nation.flags.png} alt={nation.flags.alt} />
-            </div>
-          )
-        })}
-      </div>}
+      {filterCountry.length === 0 || countryName === "" ? <p>Too many cases, specify further</p> : <Countries countryArr={filterCountry} objFunc={objToArr}/>}
     </div>
   )
 }
