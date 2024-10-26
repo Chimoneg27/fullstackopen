@@ -14,7 +14,6 @@ function App() {
       .get('https://studies.cs.helsinki.fi/restcountries/api/all')
       .then(response => {
         setCountry(response.data)
-        console.log(response.data[0].languages)
       });
   }, []);
 
@@ -25,12 +24,7 @@ function App() {
     const filtered = country.filter((nation) => {
       return nation.name.official.toLowerCase().includes(searchName.toLowerCase())
     })
-
-    // if(filtered.length <= 10) {
-      setFilterCountry(filtered)
-    // } else {
-    //   setFilterCountry([])
-    // }
+    setFilterCountry(filtered)
   }
 
 const objToArr = (obj) => {
@@ -49,7 +43,10 @@ const objToArr = (obj) => {
     } else if(arr.length > 10) {
       return <p>Too many cases, specify further</p>
     } else if(arr.length <= 10 && arr.length > 1) {
-      return arr.map(nation => <p key={nation.name.official}>{nation.name.official}</p>)
+      return arr.map(nation => 
+        <div key={nation.name.official}>
+          {nation.name.official} <button>show</button>
+        </div>)
     } else {
       return <Countries countryArr={arr} objFunc={objToArr}/>
     }

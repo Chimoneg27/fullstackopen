@@ -8,3 +8,11 @@ img {
     width: 15rem;
     height: 9rem;
 }
+
+.isShown {
+    display: block;
+}
+
+.isHidden {
+    display: none;
+}

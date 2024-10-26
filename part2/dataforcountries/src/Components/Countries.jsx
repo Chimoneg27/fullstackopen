@@ -1,6 +1,6 @@
-const Countries = ({ countryArr, objFunc }) => {
+const Countries = ({ countryArr, objFunc, show }) => {
   return (
-    <div>
+    <div className={show}>
     {countryArr.map((nation) => {
         return (
           <div key={nation.name.official}>
