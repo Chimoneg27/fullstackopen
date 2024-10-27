@@ -39,6 +39,7 @@ const objToArr = (obj) => {
 }
 
 const toggleShow = (code) => {
+  // here the prevCode is tested against the code argument to see whether it matches or not, if does it stays null if not it turns to code
   setHidden(prevCode => (prevCode === code ? null : code))
 }
 
@@ -48,6 +49,8 @@ const toggleShow = (code) => {
     } else if(arr.length > 10) {
       return <p>Too many cases, specify further</p>
     } else if(arr.length <= 10 && arr.length > 1) {
+      // then here we conditonally render the individual contry's data depending on the code mtches if it does it 
+      // renders if it doesn't it will not render or open the one it matches
       return arr.map(nation => 
         <div key={nation.name.official}>
           {nation.name.official} <button onClick={() => toggleShow(nation.ccn3)}>show</button>
