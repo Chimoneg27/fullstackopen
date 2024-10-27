@@ -9,14 +9,6 @@ img {
     height: 9rem;
 }
 
-.isShown {
-    display: block;
-}
-
-.isHidden {
-    display: none;
-}
-
 .weatherIcon img{
     width: 6rem;
     height: 6rem

@@ -37,8 +37,6 @@ function App() {
     })
     setFilterCountry(filtered)
     setCapital(filterCountry[0].capital[0])
-    console.log(filterCountry)
-    console.log(filterCountry[0].capital[0])
   }
 
 const objToArr = (obj) => {
