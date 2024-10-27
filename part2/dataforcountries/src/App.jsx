@@ -9,6 +9,7 @@ function App() {
   const [filterCountry, setFilterCountry] = useState([])
   const [countryName, setCountryName] = useState("")
   const [hidden, setHidden] = useState(null)
+  // const [capital, setCapital] = useState('')
 
   useEffect(() => {
     axios
@@ -17,6 +18,11 @@ function App() {
         setCountry(response.data)
       });
   }, []);
+
+  // useEffect(() => {
+  //   axios
+  //     .get()
+  // })
 
   const onSearchCountry = (e) => {
     const searchName = e.target.value
@@ -49,7 +55,7 @@ const toggleShow = (code) => {
     } else if(arr.length > 10) {
       return <p>Too many cases, specify further</p>
     } else if(arr.length <= 10 && arr.length > 1) {
-      // then here we conditonally render the individual contry's data depending on the code mtches if it does it 
+      // then here we conditionally render the individual contry's data depending on the code mtches if it does it 
       // renders if it doesn't it will not render or open the one it matches
       return arr.map(nation => 
         <div key={nation.name.official}>
