@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Filter from './Components/Filter'
 import Countries from './Components/Countries'
+import Weather from './Components/Weather'
 import axios from 'axios'
 import './styles/app.css'
 
@@ -9,7 +10,9 @@ function App() {
   const [filterCountry, setFilterCountry] = useState([])
   const [countryName, setCountryName] = useState("")
   const [hidden, setHidden] = useState(null)
-  // const [capital, setCapital] = useState('')
+  const [capital, setCapital] = useState('London')
+  const [weatherData, setWeatherData] = useState(null)
+  const apiKey = import.meta.env.VITE_WEATHER_API_KEY
 
   useEffect(() => {
     axios
@@ -19,10 +22,11 @@ function App() {
       });
   }, []);
 
-  // useEffect(() => {
-  //   axios
-  //     .get()
-  // })
+  useEffect(() => {
+    axios
+      .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&units=metric&appid=${apiKey}`)
+      .then(response => setWeatherData(response.data))
+  }, [capital, apiKey])
 
   const onSearchCountry = (e) => {
     const searchName = e.target.value
@@ -32,6 +36,9 @@ function App() {
       return nation.name.official.toLowerCase().includes(searchName.toLowerCase())
     })
     setFilterCountry(filtered)
+    setCapital(filterCountry[0].capital[0])
+    console.log(filterCountry)
+    console.log(filterCountry[0].capital[0])
   }
 
 const objToArr = (obj) => {
@@ -45,7 +52,6 @@ const objToArr = (obj) => {
 }
 
 const toggleShow = (code) => {
-  // here the prevCode is tested against the code argument to see whether it matches or not, if does it stays null if not it turns to code
   setHidden(prevCode => (prevCode === code ? null : code))
 }
 
@@ -55,8 +61,6 @@ const toggleShow = (code) => {
     } else if(arr.length > 10) {
       return <p>Too many cases, specify further</p>
     } else if(arr.length <= 10 && arr.length > 1) {
-      // then here we conditionally render the individual contry's data depending on the code mtches if it does it 
-      // renders if it doesn't it will not render or open the one it matches
       return arr.map(nation => 
         <div key={nation.name.official}>
           {nation.name.official} <button onClick={() => toggleShow(nation.ccn3)}>show</button>
@@ -65,7 +69,13 @@ const toggleShow = (code) => {
           }
         </div>)
     } else {
-      return <Countries countryArr={arr} objFunc={objToArr}/>
+      return (
+        <div>
+          <Countries countryArr={arr} objFunc={objToArr}/>
+
+          <Weather obj={weatherData}/>
+        </div>
+      )
     }
   }
 
