@@ -8,6 +8,7 @@ function App() {
   const [country, setCountry] = useState([])
   const [filterCountry, setFilterCountry] = useState([])
   const [countryName, setCountryName] = useState("")
+  const [hidden, setHidden] = useState(null)
 
   useEffect(() => {
     axios
@@ -37,6 +38,10 @@ const objToArr = (obj) => {
   return newArr
 }
 
+const toggleShow = (code) => {
+  setHidden(prevCode => (prevCode === code ? null : code))
+}
+
   const conditions = (arr) => {
     if(countryName === "") {
       return <p>Enter a country</p>
@@ -45,7 +50,10 @@ const objToArr = (obj) => {
     } else if(arr.length <= 10 && arr.length > 1) {
       return arr.map(nation => 
         <div key={nation.name.official}>
-          {nation.name.official} <button>show</button>
+          {nation.name.official} <button onClick={() => toggleShow(nation.ccn3)}>show</button>
+          {hidden === nation.ccn3 && 
+            (<Countries countryArr={[nation]} objFunc={objToArr}/>)
+          }
         </div>)
     } else {
       return <Countries countryArr={arr} objFunc={objToArr}/>
