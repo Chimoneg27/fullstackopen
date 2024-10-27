@@ -1,5 +1,5 @@
 const Weather = ({ obj }) => {
-    const iconUrl = " https://openweathermap.org/img/wn/"
+    const iconUrl = " https://openweathermap.org/img/w/"
     const image = obj.weather[0].icon +".png"
     const src = iconUrl + image
     return (
