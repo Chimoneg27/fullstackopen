@@ -27,6 +27,12 @@ let notes = [
     response.json(notes)
   })
 
+  app.get('/api/notes/:id', (request, response) => {
+    const id = request.params.id
+    const note = notes.find(note => note.id === id)
+    response.json(note)
+  })
+
 const PORT = 3001
 app.listen(PORT)
 console.log(`Server is running on port ${PORT}`)
