@@ -13,19 +13,22 @@ mongoose.set("strictQuery", false)
 
 mongoose.connect(url)
 
+// define what values go into the note
 const noteSchema = new mongoose.Schema({
   content: String,
   important: Boolean
 })
 
+// the singular nonte is the name of the model
 const Note = mongoose.model("Note", noteSchema)
 
 const note = new Note({
-  content: "Hole, me llamo Garvin. Como tu llamos",
+  content: "Hoy es miercoles",
   important: true
 })
 
 note.save().then((result) => {
   console.log("note saved!")
+  console.log(result)
   mongoose.connection.close()
 })
