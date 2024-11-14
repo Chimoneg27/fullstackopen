@@ -1,15 +1,15 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
+const dotenv = require('dotenv')
+dotenv.config()
+const url = process.env.MONGODB_URI
 
 app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
 
 const mongoose = require('mongoose')
-require('dotenv').config({ path: '.env' })
-  
-const url = process.env.MONGODB_URI
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
