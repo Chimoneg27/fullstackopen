@@ -1,4 +1,3 @@
-require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const app = express()
@@ -8,6 +7,7 @@ app.use(cors())
 app.use(express.static('dist'))
 
 const mongoose = require('mongoose')
+require('dotenv').config({ path: '.env' })
   
 const url = process.env.MONGODB_URI
 mongoose.set('strictQuery',false)
