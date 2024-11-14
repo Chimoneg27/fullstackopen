@@ -22,20 +22,32 @@ const noteSchema = new mongoose.Schema({
 // the singular nonte is the name of the model
 const Note = mongoose.model("Note", noteSchema)
 
-const note = new Note({
-  content: "Hoy es miercoles",
-  important: true
-})
-
-// note.save().then((result) => {
-//   console.log("note saved!")
-//   console.log(result)
-//   mongoose.connection.close()
-// })
-
-Note.find({}).then(result => {
-  result.forEach(note => {
-    console.log(note)
+if (content && important) {
+  const note = new Note({
+    content: "Hoy es miercoles",
+    important: true
   })
-  mongoose.connection.close()
-})
+
+  note
+    .save()
+    .then((result) => {
+      console.log("note saved!")
+      console.log(result)
+      mongoose.connection.close()
+    })
+    .catch((error) => {
+      console.error("error saving the note", error)
+      mongoose.connection.close()
+    })
+} else {
+  Note.find({}).then((result) => {
+    result.forEach((note) => {
+      console.log(note)
+    })
+    mongoose.connection.close()
+  })
+  .catch((error) => {
+    console.error("error fetching notes")
+    mongoose.connection.close()
+  })
+}
