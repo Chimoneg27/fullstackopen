@@ -4,7 +4,7 @@ const app = express()
 const dotenv = require('dotenv')
 dotenv.config()
 const url = process.env.MONGODB_URI
-
+ 
 app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
