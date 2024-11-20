@@ -7,27 +7,6 @@ app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
 
-const mongoose = require('mongoose')
-
-const url = process.env.MONGODB_URI
-mongoose.set('strictQuery',false)
-mongoose.connect(url)
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-})
-
-const Note = mongoose.model('Note', noteSchema)
-
-noteSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
-
   app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
   })
@@ -73,14 +52,14 @@ noteSchema.set('toJSON', {
       })
     }
 
-    const note = {
-      content: body.content,
-      important: Boolean(body.important) || false,
-      id: generateId()
-    }
+    // const note = {
+    //   content: body.content,
+    //   important: Boolean(body.important) || false,
+    //   id: generateId()
+    // }
 
-    notes = notes.concat(note)
-    response.json(note)
+    // notes = notes.concat(note)
+    // response.json(note)
   })
 
 const PORT = process.env.PORT || 3001
