@@ -1,4 +1,4 @@
-const Persons = ({ personsArray, removePerson }) => {
+const Persons = ({ personsArray = [], removePerson }) => {
   return (
     <ul>
       {personsArray.map((person) => {
