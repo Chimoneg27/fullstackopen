@@ -39,13 +39,21 @@ const App = () => {
         }, 5000)
       }
     } else {
-      personService.create(newObj).then((response) => {
+      personService.create(newObj)
+      .then((response) => {
         setPersons(persons.concat(response))
         setFilterPersons(persons.concat(response))
         setClassMsg('added')
         setAddedMsg(
           `Added ${response.name}`
         )
+        setTimeout(() => {
+          setAddedMsg(null)
+        }, 5000)
+      })
+      .catch((error) => {
+        setAddedMsg(`${error.response.data.error}`)
+        setClassMsg('error')
         setTimeout(() => {
           setAddedMsg(null)
         }, 5000)
