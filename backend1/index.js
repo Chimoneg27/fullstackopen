@@ -4,6 +4,9 @@ const cors = require("cors")
 const app = express()
 const Note = require("./models/note")
 
+const config = require('./utils/config')
+const logger = require('./utils/logger')
+
 app.use(express.json())
 app.use(cors())
 app.use(express.static("dist"))
@@ -90,7 +93,6 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
+app.listen(config.PORT, () => {
+  logger.info(`Server is running on port ${config.PORT}`)
 })
