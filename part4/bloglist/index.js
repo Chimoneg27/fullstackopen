@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
+app.use(express.static('dist'))
 
 const blogSchema = new mongoose.Schema({
   title: String,
@@ -13,7 +14,7 @@ const blogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model('Blog', blogSchema)
 
-const mongoUrl = 'mongodb://localhost/bloglist'
+const mongoUrl = process.env.MONGOD_URI
 mongoose.connect(mongoUrl)
 
 app.use(cors())
