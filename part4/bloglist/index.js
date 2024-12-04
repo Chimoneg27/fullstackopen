@@ -1,23 +1,11 @@
 const dotenv = require('dotenv')
+dotenv.config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
+const Blog = require('./models/blog')
+
 app.use(express.static('dist'))
-
-const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
-
-const Blog = mongoose.model('Blog', blogSchema)
-
-dotenv.config()
-const mongoUrl = process.env.MONGODB_URI
-mongoose.connect(mongoUrl)
-
 app.use(cors())
 app.use(express.json())
 
