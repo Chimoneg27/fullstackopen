@@ -9,15 +9,16 @@ app.use(express.static('dist'))
 app.use(cors())
 app.use(express.json())
 
-app.get('/api/blogs', (request, response) => {
+app.get('/api/blogs', (request, response, next) => {
   Blog
     .find({})
     .then(blogs => {
       response.json(blogs)
     })
+    .catch(error => next(error))
 })
 
-app.get('/api/blogs/:id', (request, response) => {
+app.get('/api/blogs/:id', (request, response, next) => {
   Blog
     .findById(request.params.id)
     .then(blog => {
@@ -27,13 +28,10 @@ app.get('/api/blogs/:id', (request, response) => {
         response.status(404).end()
       }
     })
-    .catch(error => {
-      console.log(error)
-      response.status(400).send({ error: 'malformed id' })
-    })
+    .catch(error => next(error))
 })
 
-app.post('/api/blogs', (request, response) => {
+app.post('/api/blogs', (request, response, next) => {
   const blog = new Blog(request.body)
 
   blog
@@ -41,7 +39,28 @@ app.post('/api/blogs', (request, response) => {
     .then(result => {
       response.status(201).json(result)
     })
+    .catch(error => next(error))
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if(error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
