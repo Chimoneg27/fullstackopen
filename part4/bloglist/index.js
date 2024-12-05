@@ -17,6 +17,22 @@ app.get('/api/blogs', (request, response) => {
     })
 })
 
+app.get('/api/blogs/:id', (request, response) => {
+  Blog
+    .findById(request.params.id)
+    .then(blog => {
+      if(blog) {
+        response.json(blog)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformed id' })
+    })
+})
+
 app.post('/api/blogs', (request, response) => {
   const blog = new Blog(request.body)
 
