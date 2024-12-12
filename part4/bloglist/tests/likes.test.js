@@ -1,5 +1,6 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
+const totalLikes = require('../utils/list_helper').totalLikes
 
 
 describe('total likes', () => {
@@ -54,5 +55,18 @@ describe('total likes', () => {
     }
   ]
 
-  test('when list has only one blo')
+  test('when list is empty', () => {
+    const result = totalLikes([])
+    assert.strictEqual(result, 0)
+  })
+
+  test('when list has only one blog, equals the likes of that', () => {
+    const result = totalLikes([blogs[1]])
+    assert.strictEqual(result, 5)
+  })
+
+  test('when list has more than one blog', () => {
+    const result = totalLikes(blogs)
+    assert.strictEqual(result, 36)
+  })
 })
