@@ -24,12 +24,15 @@ const favoriteBlog = (blogs) => {
 }
 
 const mostBlogs = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
   const blogCount = _.countBy(blogs, 'author')
   // Object.entries(blogcount) converts the blogCount obj into an array of [author, blogs, pairs]
   // -.maxBy finds the pair with the maximum count
   // then we manually form the mostAuthor obj
   const mostAuthor = _.maxBy(Object.entries(blogCount), (author, count) => count)
-  return mostAuthor ? { author: mostAuthor[0], blogs: mostAuthor[1] } : null
+  return { author: mostAuthor[0], blogs: mostAuthor[1] }
 }
 
 module.exports = {
