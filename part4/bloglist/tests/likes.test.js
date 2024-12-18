@@ -85,10 +85,12 @@ describe('favorite blog', () => {
   })
 })
 
-describe('author with the most blogs', () => {
-  const result = mostBlogs(blogs)
-  assert.toEqual(result, {
-    author: 'Robert C. Martin',
-    blogs: 3
+describe('author blogs', () => {
+  test('look for author with the most blogs', () => {
+    const result = mostBlogs(blogs)
+    assert.deepStrictEqual(result, {
+      author: 'Robert C. Martin',
+      blogs: 3,
+    })
   })
 })
