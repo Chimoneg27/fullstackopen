@@ -1,4 +1,5 @@
 const { test, after } = require('node:test')
+const assert = require('assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
