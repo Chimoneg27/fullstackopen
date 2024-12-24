@@ -4,11 +4,11 @@
   "description": "this is a blog api",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test node --test",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint:fix": "eslint . --fix"
   },
   "author": "Garvin Chimone",
   "license": "ISC",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@eslint/js": "^9.16.0",
     "@stylistic/eslint-plugin-js": "^2.11.0",
+    "cross-env": "^7.0.3",
     "eslint": "^9.16.0",
     "globals": "^15.13.0"
   }
