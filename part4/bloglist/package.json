@@ -26,6 +26,7 @@
     "@stylistic/eslint-plugin-js": "^2.11.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.16.0",
-    "globals": "^15.13.0"
+    "globals": "^15.13.0",
+    "supertest": "^7.0.0"
   }
 }
