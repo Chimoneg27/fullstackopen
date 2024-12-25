@@ -1,6 +1,7 @@
 const { test, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const assert = require('node:assert')
 const app = require('../app')
 const Blog = require('../models/blog')
 
@@ -34,6 +35,12 @@ test('notes are returned as json', async () => {
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
+})
+
+test('there are two blogs', async () => {
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
 after(async () => {
