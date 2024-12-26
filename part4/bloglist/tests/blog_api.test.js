@@ -43,6 +43,29 @@ test('there are two blogs', async () => {
   assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
+test('unique identifier is id', async () => {
+  // const uri = process.env.TEST_MONGODB_URI
+  try {
+    const blogPost = new Blog(  {
+      title: 'This is test one blog',
+      author: 'Stella Queresma',
+      url: 'howdoesdinner@8sound.com',
+      likes: 2
+    })
+    const savedBlogPost = blogPost.save()
+
+    const jsonBlog = (await savedBlogPost).toJSON
+
+    if (jsonBlog.id && !jsonBlog._id) {
+      console.log('Test passed: `id` exists and `_id` is removed.')
+    } else {
+      console.error('Test failed: Transformation did not work as expected.')
+    }
+  } catch(error) {
+    console.error('Test failed with error:', error)
+  }
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
