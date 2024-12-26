@@ -10,8 +10,8 @@ const api = supertest(app)
 const initialBlogs = [
   {
     title: 'This is test one blog',
-    author: 'Stella Queresma',
-    url: 'howdoesdinner@8sound.com',
+    author: 'Queresma',
+    url: 'trivela@8sound.com',
     likes: 2
   },
   {
@@ -47,8 +47,8 @@ test('unique identifier is id', async () => {
   try {
     const blogPost = new Blog({
       title: 'This is test one blog',
-      author: 'Stella Queresma',
-      url: 'howdoesdinner@8sound.com',
+      author: 'Queresma',
+      url: 'howdoesportugal@8sound.com',
       likes: 2
     })
     const savedBlogPost = blogPost.save()
@@ -68,8 +68,8 @@ test('unique identifier is id', async () => {
 test('a blog post is added', async () => {
   const newBlogPost = {
     title: 'This is test one blog',
-    author: 'Stella Queresma',
-    url: 'howdoesdinner@8sound.com',
+    author: 'Queresma',
+    url: 'howdoestrivela@8sound.com',
     likes: 2
   }
 
@@ -86,21 +86,39 @@ test('a blog post is added', async () => {
   assert(contents.includes('Stella Queresma'))
 })
 
-// test('blog post without likes', async () => {
-//   const newBlogPost = {
-//     title: 'This is test one blog',
-//     author: 'Stella Queresma',
-//     url: 'howdoesdinner@8sound.com'
-//   }
+test('blog post without url', async () => {
+  const newBlogPost = {
+    author: 'Queresma',
+    url: 'https://',
+    likes: 2
+  }
 
-//   await api
-//     .post('/api/blogs')
-//     .send(newBlogPost)
-//     .expect(400)
+  await api
+    .post('/api/blogs')
+    .send(newBlogPost)
+    .expect(400)
 
-//   const response = await api.get('/api/blogs')
-//   assert.strictEqual(response.body.length, initialBlogs.length)
-// })
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body.length, initialBlogs.length)
+})
+
+test('blog post without', async () => {
+  const newBlogPost = {
+    title: 'Max Steele',
+    url: 'https://',
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogPost)
+    .expect(400)
+
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body.length, initialBlogs.length)
+})
 
 test('blogSchema sets default likes to 0', async () => {
   const blog = new Blog({ title: 'Title', author: 'Author', url: 'http://example.com' })
