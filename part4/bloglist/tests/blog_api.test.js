@@ -46,7 +46,7 @@ test('there are two blogs', async () => {
 test('unique identifier is id', async () => {
   // const uri = process.env.TEST_MONGODB_URI
   try {
-    const blogPost = new Blog(  {
+    const blogPost = new Blog({
       title: 'This is test one blog',
       author: 'Stella Queresma',
       url: 'howdoesdinner@8sound.com',
@@ -64,6 +64,27 @@ test('unique identifier is id', async () => {
   } catch(error) {
     console.error('Test failed with error:', error)
   }
+})
+
+test('a blog post is added', async () => {
+  const newBlogPost = {
+    title: 'This is test one blog',
+    author: 'Stella Queresma',
+    url: 'howdoesdinner@8sound.com',
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogPost)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const contents = response.body.map(r => r.author)
+
+  assert.strictEqual(response.body.length, initialBlogs.length + 1)
+  assert(contents.includes('Stella Queresma'))
 })
 
 after(async () => {
