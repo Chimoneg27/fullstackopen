@@ -44,7 +44,6 @@ test('there are two blogs', async () => {
 })
 
 test('unique identifier is id', async () => {
-  // const uri = process.env.TEST_MONGODB_URI
   try {
     const blogPost = new Blog({
       title: 'This is test one blog',
@@ -85,6 +84,28 @@ test('a blog post is added', async () => {
 
   assert.strictEqual(response.body.length, initialBlogs.length + 1)
   assert(contents.includes('Stella Queresma'))
+})
+
+// test('blog post without likes', async () => {
+//   const newBlogPost = {
+//     title: 'This is test one blog',
+//     author: 'Stella Queresma',
+//     url: 'howdoesdinner@8sound.com'
+//   }
+
+//   await api
+//     .post('/api/blogs')
+//     .send(newBlogPost)
+//     .expect(400)
+
+//   const response = await api.get('/api/blogs')
+//   assert.strictEqual(response.body.length, initialBlogs.length)
+// })
+
+test('blogSchema sets default likes to 0', async () => {
+  const blog = new Blog({ title: 'Title', author: 'Author', url: 'http://example.com' })
+  await blog.validate()
+  assert.strictEqual(blog.likes, 0)
 })
 
 after(async () => {
