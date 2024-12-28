@@ -1,5 +1,5 @@
 require('express-async-errors')
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const assert = require('node:assert')
@@ -11,103 +11,106 @@ const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-
-  let blogObj = new helper.initialBlogs
-    .map(blog => new Blog(blog))
-  const promiseArray = blogObj.map(blog => blog.save())
-  await Promise.all(promiseArray)
+  await Blog.insertMany(helper.initialBlogs)
 })
 
-test('notes are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-})
+describe('when some notes are saved', () => {
 
-test('there are two blogs', async () => {
-  const response = await api.get('/api/blogs')
-
-  assert.strictEqual(response.body.length, helper.initialBlogs.length)
-})
-
-test('unique identifier is id', async () => {
-  const blogPost = new Blog({
-    title: 'This is test one blog',
-    author: 'Queresma',
-    url: 'howdoesportugal@8sound.com',
-    likes: 2
+  test('notes are returned as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
   })
-  const savedBlogPost = blogPost.save()
 
-  const jsonBlog = (await savedBlogPost).toJSON
+  test('there are two blogs', async () => {
+    const response = await api.get('/api/blogs')
 
-  if (jsonBlog.id && !jsonBlog._id) {
-    console.log('Test passed: `id` exists and `_id` is removed.')
-  } else {
-    console.error('Test failed: Transformation did not work as expected.')
-  }
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
+  })
 })
 
-test('a blog post is added', async () => {
-  const newBlogPost = {
-    title: 'This is test one blog',
-    author: 'Queresma',
-    url: 'howdoestrivela@8sound.com',
-    likes: 2
-  }
+describe('viewing one of the blogs', () => {
+  test('unique identifier is id', async () => {
+    const blogPost = new Blog({
+      title: 'This is test one blog',
+      author: 'Queresma',
+      url: 'howdoesportugal@8sound.com',
+      likes: 2
+    })
+    const savedBlogPost = await blogPost.save()
 
-  await api
-    .post('/api/blogs')
-    .send(newBlogPost)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    const jsonBlog = savedBlogPost.toJSON()
 
-  const blogsAtEnd = await helper.blogsInDb()
-  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+    if (jsonBlog.id && !jsonBlog._id) {
+      console.log('Test passed: `id` exists and `_id` is removed.')
+    } else {
+      console.error('Test failed: Transformation did not work as expected.')
+    }
+  })
 
-  const contents = blogsAtEnd.map(b => b.author)
-  assert(contents.includes('Queresma'))
+  test('a blog post is added', async () => {
+    const newBlogPost = {
+      title: 'This is test one blog',
+      author: 'Queresma',
+      url: 'howdoestrivela@8sound.com',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlogPost)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+    const contents = blogsAtEnd.map(b => b.author)
+    assert(contents.includes('Queresma'))
+  })
 })
 
-test('blog post without title', async () => {
-  const newBlogPost = {
-    author: 'Queresma',
-    url: 'https://',
-    likes: 2
-  }
+describe('fails when one of the fields are missing', () => {
+  test('blog post without title', async () => {
+    const newBlogPost = {
+      author: 'Queresma',
+      url: 'https://',
+      likes: 2
+    }
 
-  await api
-    .post('/api/blogs')
-    .send(newBlogPost)
-    .expect(400)
+    await api
+      .post('/api/blogs')
+      .send(newBlogPost)
+      .expect(400)
 
-  const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs')
 
-  assert.strictEqual(response.body.length, helper.initialBlogs.length)
-})
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
+  })
 
-test('blog post without author', async () => {
-  const newBlogPost = {
-    title: 'Max Steele',
-    url: 'https://',
-    likes: 2
-  }
+  test('blog post without author', async () => {
+    const newBlogPost = {
+      title: 'Max Steele',
+      url: 'https://',
+      likes: 2
+    }
 
-  await api
-    .post('/api/blogs')
-    .send(newBlogPost)
-    .expect(400)
+    await api
+      .post('/api/blogs')
+      .send(newBlogPost)
+      .expect(400)
 
-  const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs')
 
-  assert.strictEqual(response.body.length, helper.initialBlogs.length)
-})
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
+  })
 
-test('blogSchema sets default likes to 0', async () => {
-  const blog = new Blog({ title: 'Title', author: 'Author', url: 'http://example.com' })
-  await blog.validate()
-  assert.strictEqual(blog.likes, 0)
+  test('blogSchema sets default likes to 0', async () => {
+    const blog = new Blog({ title: 'Title', author: 'Author', url: 'http://example.com' })
+    await blog.validate()
+    assert.strictEqual(blog.likes, 0)
+  })
 })
 
 after(async () => {
