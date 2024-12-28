@@ -7,17 +7,11 @@ blogsRouter.get('/',  async (request, response) => {
 })
 
 blogsRouter.get('/:id', async (request, response) => {
-
-  try {
-    const blog = await Blog.findById(request.params.id)
-    if(blog) {
-      response.json(blog)
-    } else {
-      response.status(404).end()
-    } } catch(error) {
-    if (error.name === 'ValidationError') {
-      return response.status(400).json({ error: error.message })
-    }
+  const blog = await Blog.findById(request.params.id)
+  if(blog) {
+    response.json(blog)
+  } else {
+    response.status(404).end()
   }
 })
 

@@ -1,3 +1,4 @@
+require('express-async-errors')
 const { test, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -30,24 +31,20 @@ test('there are two blogs', async () => {
 })
 
 test('unique identifier is id', async () => {
-  try {
-    const blogPost = new Blog({
-      title: 'This is test one blog',
-      author: 'Queresma',
-      url: 'howdoesportugal@8sound.com',
-      likes: 2
-    })
-    const savedBlogPost = blogPost.save()
+  const blogPost = new Blog({
+    title: 'This is test one blog',
+    author: 'Queresma',
+    url: 'howdoesportugal@8sound.com',
+    likes: 2
+  })
+  const savedBlogPost = blogPost.save()
 
-    const jsonBlog = (await savedBlogPost).toJSON
+  const jsonBlog = (await savedBlogPost).toJSON
 
-    if (jsonBlog.id && !jsonBlog._id) {
-      console.log('Test passed: `id` exists and `_id` is removed.')
-    } else {
-      console.error('Test failed: Transformation did not work as expected.')
-    }
-  } catch(error) {
-    console.error('Test failed with error:', error)
+  if (jsonBlog.id && !jsonBlog._id) {
+    console.log('Test passed: `id` exists and `_id` is removed.')
+  } else {
+    console.error('Test failed: Transformation did not work as expected.')
   }
 })
 
