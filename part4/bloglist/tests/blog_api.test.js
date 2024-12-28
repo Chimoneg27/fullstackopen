@@ -4,29 +4,15 @@ const supertest = require('supertest')
 const assert = require('node:assert')
 const app = require('../app')
 const Blog = require('../models/blog')
+const helper = require('./test_helper')
 
 const api = supertest(app)
 
-const initialBlogs = [
-  {
-    title: 'This is test one blog',
-    author: 'Queresma',
-    url: 'trivela@8sound.com',
-    likes: 2
-  },
-  {
-    title: 'I am a billionaire',
-    author: 'Garvin Chimone',
-    url: 'leaveyourmark@now.com',
-    likes: 27
-  }
-]
-
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObj = new Blog(initialBlogs[0])
+  let blogObj = new Blog(helper.initialBlogs[0])
   await blogObj.save()
-  blogObj = new Blog(initialBlogs[1])
+  blogObj = new Blog(helper.initialBlogs[1])
   await blogObj.save()
 })
 
@@ -40,7 +26,7 @@ test('notes are returned as json', async () => {
 test('there are two blogs', async () => {
   const response = await api.get('/api/blogs')
 
-  assert.strictEqual(response.body.length, initialBlogs.length)
+  assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
 test('unique identifier is id', async () => {
@@ -79,14 +65,14 @@ test('a blog post is added', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
-  const contents = response.body.map(r => r.author)
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
-  assert.strictEqual(response.body.length, initialBlogs.length + 1)
-  assert(contents.includes('Stella Queresma'))
+  const contents = blogsAtEnd.map(b => b.author)
+  assert(contents.includes('Queresma'))
 })
 
-test('blog post without url', async () => {
+test('blog post without title', async () => {
   const newBlogPost = {
     author: 'Queresma',
     url: 'https://',
@@ -100,10 +86,10 @@ test('blog post without url', async () => {
 
   const response = await api.get('/api/blogs')
 
-  assert.strictEqual(response.body.length, initialBlogs.length)
+  assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
-test('blog post without', async () => {
+test('blog post without author', async () => {
   const newBlogPost = {
     title: 'Max Steele',
     url: 'https://',
@@ -117,7 +103,7 @@ test('blog post without', async () => {
 
   const response = await api.get('/api/blogs')
 
-  assert.strictEqual(response.body.length, initialBlogs.length)
+  assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
 test('blogSchema sets default likes to 0', async () => {
