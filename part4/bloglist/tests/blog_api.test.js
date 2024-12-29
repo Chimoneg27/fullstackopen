@@ -119,13 +119,33 @@ describe('modifying a specific blog post', () => {
     const blogToDelete = blogsAtStart[0]
 
     await api
-      .delete(`./api/blogs/${blogToDelete.id}`)
+      .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
     const contents = blogsAtEnd.map(r => r.title)
     assert(!contents.includes(blogToDelete.title))
+  })
+
+  test('updating a single blog post', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updatedBlog = {
+      ...blogToUpdate,
+      likes: blogToUpdate.likes + 10
+    }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const contents = blogsAtEnd.map(blog => blog.likes)
+    assert(contents.includes(blogToUpdate.likes + 10))
   })
 })
 
