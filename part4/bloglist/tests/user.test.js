@@ -40,6 +40,26 @@ describe('when users login to the blog', () => {
     assert(result.body.error.includes('Password must be at least 3 characters long'))
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
+
+  test('username length is less than 3', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: '24',
+      name: 'Bean',
+      password: 'ringsonrings'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert(result.body.error.includes('Username must be at least 3 characters long'))
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
 })
 
 after(async () => {
