@@ -2,6 +2,7 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const authToken = require('../utils/authToken')
 const { getTokenFrom } = require('../utils/middleware')
 blogsRouter.use(getTokenFrom)
 
@@ -45,9 +46,18 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id)
-  response.status(204).end()
+blogsRouter.delete('/:id', authToken, async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+
+  if(!blog) {
+    return response.status(404).json({ message: 'Blog not found' })
+  }
+
+  if(blog.user.toString() !== request.user.id) {
+    return response.status(403).json({ message: 'You can only delete the blog you created' })
+  }
+  await blog.deleteOne()
+  response.status(200).json({ message: 'Blog deleted' })
 })
 
 blogsRouter.put('/:id', async (request, response) => {
