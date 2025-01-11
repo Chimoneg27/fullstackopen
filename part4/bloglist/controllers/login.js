@@ -30,6 +30,12 @@ loginRouter.post('/', async (request, response) => {
 
   response
     .status(200)
+    .cookie('token', token, {
+      maxAge: 2 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    })
     .send({ token, username: user.username, name: user.name })
 })
 
