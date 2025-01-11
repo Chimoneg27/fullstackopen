@@ -10,6 +10,8 @@ const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const authToken = require('./utils/authToken')
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
 
 mongoose.set('strictQuery', false)
 

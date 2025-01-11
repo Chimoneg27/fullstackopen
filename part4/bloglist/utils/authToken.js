@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken')
 
 const authToken = (request, response, next) => {
+
   const authHeader = request.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
+  const token = authHeader
+    ? authHeader.split(' ')[1]
+    : request.cookies.jwt
 
   if(!token) return response.status(401).json({ message: 'Token is missing' })
   jwt.verify(token, process.env.SECRET, (error, user) => {
