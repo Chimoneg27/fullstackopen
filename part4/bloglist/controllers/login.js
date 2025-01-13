@@ -25,13 +25,14 @@ loginRouter.post('/', async (request, response) => {
   const token = jwt.sign(
     userForToken,
     process.env.SECRET,
-    { expiresIn: 60*600000 }
+    { expiresIn: 24 * 60 * 60 * 1000 }
   )
 
   response
     .status(200)
     .cookie('token', token, {
-      maxAge: 2 * 60 * 60 * 1000,
+      path: '/',
+      maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict'
