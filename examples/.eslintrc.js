@@ -18,7 +18,11 @@ module.exports = {
         }
     ],
     'parserOptions': {
-        'ecmaVersion': 'latest'
+        'ecmaVersion': 'latest',
+        "sourceType": "module",      
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     plugins: [
         '@stylistic/js'
