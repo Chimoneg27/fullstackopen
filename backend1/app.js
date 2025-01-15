@@ -11,13 +11,14 @@ const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
+mongoose.set('bufferCommands', true)
 
 logger.info('connecting to', config.MONGODB_URI)
 
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 30000,
+  serverSelectionTimeoutMS: 60000,
   socketTimeoutMS: 45000
 })
   .then(() => {
