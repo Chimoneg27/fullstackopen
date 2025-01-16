@@ -32,6 +32,8 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+
+      noteService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -86,16 +88,6 @@ const App = () => {
         setNotes(notes.filter(n => n.id !== id))
       })
   }
-
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input
-        value={newNote}
-        onChange={handleNoteChange}
-      />
-      <button type="submit">save</button>
-    </form>
-  )
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
   return (
