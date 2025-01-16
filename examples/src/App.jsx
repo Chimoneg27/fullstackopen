@@ -1,29 +1,17 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react'
 import Note from './Components/Note'
+import Footer from './Components/Footer'
 import noteService from './services/notes'
 import Notification from './Components/Notification'
-
-const Footer = () => {
-  const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSize: 16
-  }
-
-  return (
-    <div style={footerStyle}>
-      <br/>
-      <em>Note app, Department of Computer Science, University of Helsinki 2024</em>
-    </div>
-  )
-}
 
 const App = () => {
   const [notes, setNotes] = useState(null)
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   useEffect(() => {
     noteService
@@ -32,6 +20,11 @@ const App = () => {
         setNotes(initialNotes)
       }, [])
   })
+
+  const handleLogin = (event) => {
+    event.preventDefault()
+    console.log('logging in with', username, password)
+  }
 
   if (!notes) {
     return null
@@ -83,6 +76,28 @@ const App = () => {
       <h1>Notes</h1>
 
       <Notification message={errorMessage}/>
+
+      <form onSubmit={handleLogin}>
+        <div>
+          username
+          <input
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">login</button>
+      </form>
 
       <div>
         <button onClick={() => setShowAll(!showAll)}>
