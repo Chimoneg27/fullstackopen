@@ -13,8 +13,8 @@ const Footer = () => {
 
   return (
     <div style={footerStyle}>
-    <br/>
-    <em>Note app, Department of Computer Science, University of Helsinki 2024</em>
+      <br/>
+      <em>Note app, Department of Computer Science, University of Helsinki 2024</em>
     </div>
   )
 }
@@ -33,8 +33,8 @@ const App = () => {
       }, [])
   })
 
-  if (!notes) { 
-    return null 
+  if (!notes) {
+    return null
   }
 
   const addNote = (e) => {
@@ -44,7 +44,7 @@ const App = () => {
       content: newNote,
       important: Math.random() > 0.5,
     }
-    
+
     noteService
       .create(noteObj)
       .then(returnedNote => {
@@ -59,9 +59,9 @@ const App = () => {
 
   const toggleImportanceOf = (id) => {
     const note = notes.find(n => n.id === id)
-  
+
     const changedNote = { ...note, important: !note.important }
-  
+
     noteService
       .update(id, changedNote).then(returnedNote => {
         setNotes(notes.map(n => n.id !== id ? n : returnedNote))
@@ -91,8 +91,8 @@ const App = () => {
       </div>
 
       <ul>
-        {notesToShow.map(note => 
-          <Note 
+        {notesToShow.map(note =>
+          <Note
             key={note.id}
             note={note}
             toggleImportance={() => toggleImportanceOf(note.id)}
@@ -101,8 +101,8 @@ const App = () => {
       </ul>
 
       <form onSubmit={addNote}>
-      <input value={newNote} onChange={handleNoteChange}/>
-      <button type="submit">save</button>
+        <input value={newNote} onChange={handleNoteChange}/>
+        <button type="submit">save</button>
       </form>
 
       <Footer />
