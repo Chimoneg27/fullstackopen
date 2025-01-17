@@ -7,7 +7,9 @@ module.exports = {
     'overrides': [
         {
             'env': {
-                'node': true
+                "browser": true,
+                "node": true,
+                "jasmine": true
             },
             'files': [
                 '.eslintrc.{js,cjs}'
