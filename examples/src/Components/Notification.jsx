@@ -1,13 +1,15 @@
 const Notification = ({ message }) => {
-    if (message === null) {
-        return null
-    }
+  if (message === null) {
+    return null
+  }
 
-    return (
-        <div className="error">
-          {message}
-        </div>
-    )
+  const classed = message === null || message === '' ? 'noError' : 'error'
+
+  return (
+    <div className={classed}>
+      {message}
+    </div>
+  )
 }
 
 export default Notification
