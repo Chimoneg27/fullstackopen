@@ -1,7 +1,6 @@
-post http://localhost:3001/api/login
+post http://localhost:3001/api/notes
 Content-Type: application/json
 
 {
-    "username": "Garvin27",
-    "password": "123456"
+    "content": "I scored a hat-trick against southampton"
 }
