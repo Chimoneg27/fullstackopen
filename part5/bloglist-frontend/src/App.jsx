@@ -4,10 +4,12 @@ import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
+  const [createdBlogMessage, setCreatedBlogMessage] = useState('')
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [newTitle, setNewTitle] = useState('')
@@ -47,7 +49,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage('Wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -78,6 +80,10 @@ const App = () => {
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
+      setCreatedBlogMessage(`a new blog, ${blogObj.title}, has been added`)
+      setTimeout(() => {
+        setCreatedBlogMessage(null)
+      }, 5000)
     })
   }
 
@@ -85,15 +91,27 @@ const App = () => {
     <div>
       {
         user === null?
-        <LoginForm
-        username={username}
-        password={password}
-        handleLogin={handleLogin}
-        setUsername={setUsername}
-        setPassword={setPassword}
-      /> :
+        <div>
+          <Notification 
+            message={errorMessage}
+            type="error"
+          />
+          <LoginForm
+            username={username}
+            password={password}
+            handleLogin={handleLogin}
+            setUsername={setUsername}
+            setPassword={setPassword}
+          /> 
+        </div>
+:
       <div>
         <h2>blogs</h2>
+      
+        <Notification 
+          message={createdBlogMessage}
+          type="success"
+        />
 
         <div>
           <h2>{user.name}</h2>
