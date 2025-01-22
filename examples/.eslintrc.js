@@ -1,60 +1,56 @@
 module.exports = {
-    'env': {
-        'commonjs': true,
-        'es2021': true,
-        'node': true
+    env: {
+      commonjs: true,
+      es2021: true,
+      node: true,
+      browser: true,
     },
-    'overrides': [
-        {
-            'env': {
-                "browser": true,
-                "node": true,
-                "jasmine": true
-            },
-            'files': [
-                '.eslintrc.{js,cjs}'
-            ],
-            'parserOptions': {
-                'sourceType': 'script'
-            }
-        }
-    ],
-    'parserOptions': {
-        'ecmaVersion': 'latest',
-        "sourceType": "module",      
-        "ecmaFeatures": {
-            "jsx": true
-        }
+    parserOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      ecmaFeatures: {
+        jsx: true,
+      },
     },
     plugins: [
-        '@stylistic/js'
+      'react',
+      '@stylistic/js',
     ],
-    'extends': 'eslint:recommended',
-    'rules': {
-        '@stylistic/js/indent': [
-            'error',
-            2
-        ],
-        '@stylistic/js/linebreak-style': [
-            'error',
-            'unix'
-        ],
-        '@stylistic/js/quotes': [
-            'error',
-            'single'
-        ],
-        '@stylistic/js/semi': [
-            'error',
-            'never'
-        ],
-        'eqeqeq': 'error',
-        'no-trailing-spaces': 'error',
-        'object-curly-spacing': [
-            'error', 'always'
-        ],
-        'arrow-spacing': [
-            'error', { 'before': true, 'after': true }
-        ],
-        'no-console': 0,
-    }
-}
+    extends: [
+      'eslint:recommended',
+      'plugin:react/recommended',
+    ],
+    rules: {
+      '@stylistic/js/indent': [
+        'error',
+        2,
+      ],
+      '@stylistic/js/linebreak-style': [
+        'error',
+        'unix',
+      ],
+      '@stylistic/js/quotes': [
+        'error',
+        'single',
+      ],
+      '@stylistic/js/semi': [
+        'error',
+        'never',
+      ],
+      'eqeqeq': 'error',
+      'no-trailing-spaces': 'error',
+      'object-curly-spacing': [
+        'error', 'always',
+      ],
+      'arrow-spacing': [
+        'error', { 'before': true, 'after': true },
+      ],
+      'no-console': 0,
+      'react/prop-types': 0, // Disable prop-types rule if you are using TypeScript
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+  }
