@@ -15,6 +15,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     noteService
@@ -115,6 +116,8 @@ const App = () => {
           password={password}
           setPassword={setPassword}
           setUsername={setUsername}
+          setLoginVisible={setLoginVisible}
+          loginVisible={loginVisible}
         /> :
         <div>
           <p>{user.name} logged-in</p>
