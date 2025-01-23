@@ -6,6 +6,7 @@ import Notification from './Components/Notification'
 import loginService from './services/login'
 import LoginForm from './Components/LoginForm'
 import NoteForm from './Components/NoteForm'
+import Toggable from './Components/Toggable'
 
 const App = () => {
   const [notes, setNotes] = useState(null)
@@ -121,11 +122,14 @@ const App = () => {
         /> :
         <div>
           <p>{user.name} logged-in</p>
-          <NoteForm
-            addNote={addNote}
-            newNote={newNote}
-            handleNoteChange={handleNoteChange}
-          />
+
+          <Toggable buttonLabel="new note">
+            <NoteForm
+              addNote={addNote}
+              newNote={newNote}
+              handleNoteChange={handleNoteChange}
+            />
+          </Toggable>
         </div>
       }
 
