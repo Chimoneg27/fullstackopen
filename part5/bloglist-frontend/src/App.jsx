@@ -12,9 +12,7 @@ const App = () => {
   const [createdBlogMessage, setCreatedBlogMessage] = useState('')
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+
   const [user, setUser] = useState(null) 
   const [blogFormVisible, setBlogFormVisible] = useState(false)
 
@@ -65,22 +63,11 @@ const App = () => {
     }
   }
 
-  const addBlog = (e) => {
-    e.preventDefault()
-
-    const blogObj = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
-
+  const addBlog = (blogObj) => {
     blogService
     .create(blogObj)
     .then(returnedBlog => {
       setBlogs(blogs.concat(returnedBlog))
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
       setCreatedBlogMessage(`a new blog, ${blogObj.title}, has been added`)
       setTimeout(() => {
         setCreatedBlogMessage(null)
@@ -130,13 +117,7 @@ const App = () => {
           </div>
           <div style={showWhenVisible}>
             <BlogForm 
-              addBlog={addBlog}
-              setNewAuthor={setNewAuthor}
-              setNewTitle={setNewTitle}
-              setNewUrl={setNewUrl}
-              newUrl={newUrl}
-              newTitle={newTitle}
-              newAuthor={newAuthor}
+              createBlog={addBlog}
             />
             <button onClick={() => setBlogFormVisible(false)}>close</button>
           </div>
