@@ -10,7 +10,6 @@ import Toggable from './Components/Toggable'
 
 const App = () => {
   const [notes, setNotes] = useState(null)
-  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [username, setUsername] = useState('')
@@ -63,25 +62,17 @@ const App = () => {
     return null
   }
 
-  const addNote = (e) => {
-    e.preventDefault()
-
-    const noteObj = {
-      content: newNote,
-      important: Math.random() > 0.5,
-    }
-
+  const addNote = (noteObj) => {
     noteService
       .create(noteObj)
       .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
-        setNewNote('')
       })
   }
 
-  const handleNoteChange = (e) => {
-    setNewNote(e.target.value)
-  }
+  // const handleNoteChange = (e) => {
+  //   setNewNote(e.target.value)
+  // }
 
   const toggleImportanceOf = (id) => {
     const note = notes.find(n => n.id === id)
@@ -125,9 +116,7 @@ const App = () => {
 
           <Toggable buttonLabel="new note">
             <NoteForm
-              addNote={addNote}
-              newNote={newNote}
-              handleNoteChange={handleNoteChange}
+              createNote={addNote}
             />
           </Toggable>
         </div>
