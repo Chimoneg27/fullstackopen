@@ -16,6 +16,7 @@ const App = () => {
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
   const [user, setUser] = useState(null) 
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -87,6 +88,9 @@ const App = () => {
     })
   }
 
+  const hidenWhenVisible = { display: blogFormVisible ? 'none' : '' }
+  const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
+
   return (
     <div>
       {
@@ -121,15 +125,21 @@ const App = () => {
         <br />
 
         <div>
-          <BlogForm 
-            addBlog={addBlog}
-            setNewAuthor={setNewAuthor}
-            setNewTitle={setNewTitle}
-            setNewUrl={setNewUrl}
-            newUrl={newUrl}
-            newTitle={newTitle}
-            newAuthor={newAuthor}
-          />
+          <div style={hidenWhenVisible}>
+            <button onClick={() => setBlogFormVisible(true)}>new blog</button>
+          </div>
+          <div style={showWhenVisible}>
+            <BlogForm 
+              addBlog={addBlog}
+              setNewAuthor={setNewAuthor}
+              setNewTitle={setNewTitle}
+              setNewUrl={setNewUrl}
+              newUrl={newUrl}
+              newTitle={newTitle}
+              newAuthor={newAuthor}
+            />
+            <button onClick={() => setBlogFormVisible(false)}>close</button>
+          </div>
         </div>
 
         <br />
