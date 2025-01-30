@@ -20,10 +20,13 @@ const blogSchema = new mongoose.Schema({
     required: true,
     default: 0
   },
+  userLikes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
   }
 })
 

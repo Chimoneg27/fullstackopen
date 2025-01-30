@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const { tokenExtractor } = require('../utils/middleware')
+const authToken = require('../utils/authToken')
 blogsRouter.use(tokenExtractor)
 
 blogsRouter.get('/',  async (request, response) => {
@@ -57,26 +58,31 @@ blogsRouter.delete('/:id', async (request, response) => {
   response.status(200).json({ message: 'Blog deleted' })
 })
 
-blogsRouter.put('/:id', async (request, response) => {
-  const body = request.body
+blogsRouter.put('/:id', tokenExtractor, authToken ,async (request, response) => {
+  const user = request.user
 
-  const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes
+  if (!user) {
+    return response.status(401).json({ error: 'User not authenticated' })
   }
-  const blogToUpdate =  await Blog.findByIdAndUpdate(
+
+  const blog = await Blog.findById(request.params.id)
+  if (blog.userLikes.includes(user.id)) {
+    return response.status(400).json({ error: 'You have already liked this blog' })
+  }
+
+  const updateData = { ...request.body }
+  delete updateData.likes
+  delete updateData.userLikes
+
+  const blogWithLikes = await Blog.findByIdAndUpdate(
     request.params.id,
-    blog,
+    { ...updateData, $inc: { likes: 1 },
+      $push: { userLikes: user.id }
+    },
     { new: true, runValidators: true }
   )
 
-  if (!blogToUpdate) {
-    return response.status(404).json({ error: 'blog not found' })
-  }
-
-  response.status(201).json(blogToUpdate)
+  response.json(blogWithLikes)
 })
 
 module.exports = blogsRouter
