@@ -75,6 +75,29 @@ const App = () => {
     })
   }
 
+  const addLike = async (blogL) => {
+    const blog = blogs.find(blog => blog.id === blogL.id)
+    console.log('User token:', user.token);
+    blogService.setToken(user.token)
+
+    const updatedBlog = {
+      ...blog, 
+      user: blog.user.id
+    }
+    blogService
+      .update(blog.id, updatedBlog).then(returnedBlog => {
+        setBlogs(blogs.map(b => b.id !== id ? b: returnedBlog))
+      })
+      .catch(error => {
+        setErrorMessage(
+          `You have already liked this post`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+  }
+
   const hidenWhenVisible = { display: blogFormVisible ? 'none' : '' }
   const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
@@ -126,7 +149,7 @@ const App = () => {
         <br />
         
         {blogs && blogs.map(blog => {
-          return <Blog key={blog.id} blog={blog} />
+          return <Blog key={blog.id} blog={blog} addLike={addLike}/>
         })}
       </div>  
       
