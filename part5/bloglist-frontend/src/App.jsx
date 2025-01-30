@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs(sortBlogs(blogs))
     )  
   }, [])
 
@@ -96,6 +96,10 @@ const App = () => {
           setErrorMessage(null)
         }, 5000)
       })
+  }
+
+  const sortBlogs = (blogsArr) => {
+    return blogsArr.sort((a, b) => b.likes - a.likes)
   }
 
   const hidenWhenVisible = { display: blogFormVisible ? 'none' : '' }
