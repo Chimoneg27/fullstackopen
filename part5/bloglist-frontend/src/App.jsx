@@ -75,9 +75,8 @@ const App = () => {
     })
   }
 
-  const addLike = async (blogL) => {
+  const addLike = (blogL) => {
     const blog = blogs.find(blog => blog.id === blogL.id)
-    console.log('User token:', user.token);
     blogService.setToken(user.token)
 
     const updatedBlog = {
@@ -100,6 +99,25 @@ const App = () => {
 
   const sortBlogs = (blogsArr) => {
     return blogsArr.sort((a, b) => b.likes - a.likes)
+  }
+
+  const removeBlog = (blogTD) => {
+    const blogToDelete = blogs.find(blog => blog.id === blogTD.id)
+    blogService.setToken(user.token)
+
+    blogService
+      .remove(blogToDelete.id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== blogToDelete.id))
+      })
+      .catch(error => {
+        setErrorMessage(
+          error
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
   }
 
   const hidenWhenVisible = { display: blogFormVisible ? 'none' : '' }
@@ -153,7 +171,7 @@ const App = () => {
         <br />
         
         {blogs && blogs.map(blog => {
-          return <Blog key={blog.id} blog={blog} addLike={addLike}/>
+          return <Blog key={blog.id} blog={blog} addLike={addLike} removeBlog={removeBlog}/>
         })}
       </div>  
       
