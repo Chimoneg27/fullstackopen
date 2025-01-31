@@ -50,7 +50,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(404).json({ message: 'Blog not found' })
   }
 
-  if(blog.user.toString() !== request.user.id) {
+  if(blog.user.toString() !== user.id) {
     return response.status(403).json({ message: 'You can only delete the blog you created' })
   }
 
