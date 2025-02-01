@@ -10,16 +10,16 @@ const App = () => {
   const [blogs, setBlogs] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [createdBlogMessage, setCreatedBlogMessage] = useState('')
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const [user, setUser] = useState(null) 
+  const [user, setUser] = useState(null)
   const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(sortBlogs(blogs))
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -65,14 +65,14 @@ const App = () => {
 
   const addBlog = (blogObj) => {
     blogService
-    .create(blogObj)
-    .then(returnedBlog => {
-      setBlogs(blogs.concat(returnedBlog))
-      setCreatedBlogMessage(`a new blog, ${blogObj.title}, has been added`)
-      setTimeout(() => {
-        setCreatedBlogMessage(null)
-      }, 5000)
-    })
+      .create(blogObj)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setCreatedBlogMessage(`a new blog, ${blogObj.title}, has been added`)
+        setTimeout(() => {
+          setCreatedBlogMessage(null)
+        }, 5000)
+      })
   }
 
   const addLike = (blogL) => {
@@ -80,16 +80,16 @@ const App = () => {
     blogService.setToken(user.token)
 
     const updatedBlog = {
-      ...blog, 
+      ...blog,
       user: blog.user.id
     }
     blogService
       .update(blog.id, updatedBlog).then(returnedBlog => {
-        setBlogs(blogs.map(b => b.id !== id ? b: returnedBlog))
+        setBlogs(blogs.map(b => b.id !== blogL.id ? b: returnedBlog))
       })
       .catch(error => {
         setErrorMessage(
-          `You have already liked this post`
+          'You have already liked this post'
         )
         setTimeout(() => {
           setErrorMessage(null)
@@ -127,54 +127,54 @@ const App = () => {
     <div>
       {
         user === null?
-        <div>
-          <Notification 
-            message={errorMessage}
-            type="error"
-          />
-          <LoginForm
-            username={username}
-            password={password}
-            handleLogin={handleLogin}
-            setUsername={setUsername}
-            setPassword={setPassword}
-          /> 
-        </div>
-:
-      <div>
-        <h2>blogs</h2>
-      
-        <Notification 
-          message={createdBlogMessage}
-          type="success"
-        />
-
-        <div>
-          <h2>{user.name}</h2>
-          <button onClick={handleLogout}>logout</button>
-        </div>
-
-        <br />
-
-        <div>
-          <div style={hidenWhenVisible}>
-            <button onClick={() => setBlogFormVisible(true)}>new blog</button>
-          </div>
-          <div style={showWhenVisible}>
-            <BlogForm 
-              createBlog={addBlog}
+          <div>
+            <Notification
+              message={errorMessage}
+              type="error"
             />
-            <button onClick={() => setBlogFormVisible(false)}>close</button>
+            <LoginForm
+              username={username}
+              password={password}
+              handleLogin={handleLogin}
+              setUsername={setUsername}
+              setPassword={setPassword}
+            />
           </div>
-        </div>
+          :
+          <div>
+            <h2>blogs</h2>
 
-        <br />
-        
-        {blogs && blogs.map(blog => {
-          return <Blog key={blog.id} blog={blog} addLike={addLike} removeBlog={removeBlog}/>
-        })}
-      </div>  
-      
+            <Notification
+              message={createdBlogMessage}
+              type="success"
+            />
+
+            <div>
+              <h2>{user.name}</h2>
+              <button onClick={handleLogout}>logout</button>
+            </div>
+
+            <br />
+
+            <div>
+              <div style={hidenWhenVisible}>
+                <button onClick={() => setBlogFormVisible(true)}>new blog</button>
+              </div>
+              <div style={showWhenVisible}>
+                <BlogForm
+                  createBlog={addBlog}
+                />
+                <button onClick={() => setBlogFormVisible(false)}>close</button>
+              </div>
+            </div>
+
+            <br />
+
+            {blogs && blogs.map(blog => {
+              return <Blog key={blog.id} blog={blog} addLike={addLike} removeBlog={removeBlog}/>
+            })}
+          </div>
+
       }
     </div>
   )

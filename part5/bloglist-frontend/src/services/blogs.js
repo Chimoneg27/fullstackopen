@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import axios from 'axios'
 // const baseUrl = '/api/blogs'
 const baseUrl = 'http://localhost:3002/api/blogs'
@@ -39,4 +40,4 @@ const remove = async (id) => {
   return response.data
 }
 
-export default { getAll, create, setToken, update , remove}
+export default { getAll, create, setToken, update , remove }
