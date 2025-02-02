@@ -8,7 +8,7 @@
     "dev": "vite",
     "start": "node index.js",
     "lint": "eslint .",
-    "test": "node --test"
+    "test": "vitest run"
   },
   "author": "",
   "license": "ISC",
