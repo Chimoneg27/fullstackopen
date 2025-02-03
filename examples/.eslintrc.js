@@ -4,6 +4,8 @@ module.exports = {
       es2021: true,
       node: true,
       browser: true,
+      "vitest-globals/env": true
+
     },
     parserOptions: {
       ecmaVersion: 'latest',
@@ -19,6 +21,7 @@ module.exports = {
     extends: [
       'eslint:recommended',
       'plugin:react/recommended',
+      'plugin:vitest-globals/recommended',
     ],
     rules: {
       '@stylistic/js/indent': [
