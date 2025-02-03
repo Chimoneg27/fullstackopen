@@ -23,17 +23,16 @@ test('clicking the button calls the event handler once', async () => {
     content: 'Component testing is done with react-testing-library',
     important: true
   }
-  //mock functiion defined with vitest
   const mockhandler = vi.fn()
 
   render(
     <Note note={note} toggleImportance={mockhandler}/>
   )
-  // a session is started to interact with the rendered component
+
   const user = userEvent.setup()
 
   const button = screen.getByText('make not important')
-  await user.click(button) // clicking happens with the method click of the userEvent-library
+  await user.click(button)
 
-  expect(mockhandler.mock.calls).toHaveLength() // toHaveLength verifies that the mock function has been called exactly once
+  expect(mockhandler.mock.calls).toHaveLength(1)
 })

@@ -1,26 +1,29 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import Togglable from './Togglable'
+import Toggable from './Toggable'
 
-describe('<Togglable />', () => {
+describe('<Toggable />', () => {
   let container
 
   beforeEach(() => {
     container = render(
-      <Togglable buttonLabel="show...">
+      <Toggable buttonLabel="show...">
         <div className="testDiv" >
-          togglable content
+          toggable content
         </div>
-      </Togglable>
+      </Toggable>
     ).container
   })
 
   test('renders its children', async () => {
-    await screen.findAllByText('togglable content')
+    const user = userEvent.setup()
+    const button = screen.getByText('show...')
+    await user.click(button)
+    await screen.findByText('toggable content')
   })
 
   test('at start the children are not displayed', () => {
-    const div = container.querySelector('.togglableContent')
+    const div = container.querySelector('.toggableContent')
     expect(div).toHaveStyle('display: none')
   })
 
@@ -29,7 +32,7 @@ describe('<Togglable />', () => {
     const button = screen.getByText('show...')
     await user.click(button)
 
-    const div = container.querySelector('.togglableContent')
+    const div = container.querySelector('.toggableContent')
     expect(div).not.toHaveStyle('display: none')
   })
 
@@ -41,7 +44,7 @@ describe('<Togglable />', () => {
     const closeButton = screen.getByText('cancel')
     await user.click(closeButton)
 
-    const div = container.querySelector('.togglableContent')
+    const div = container.querySelector('.toggableContent')
     expect(div).toHaveStyle('display: none')
   })
 })
