@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
-import { expect } from 'vitest'
 
 test('renders title and author', () => {
   const blog = {
@@ -41,4 +41,29 @@ test('toggles visibility of blog details', () => {
 
   expect(screen.queryByText('https://redbull.com')).toBeInTheDocument()
   expect(screen.queryByText(/10/i)).toBeInTheDocument()
+})
+
+test('clicking the like button twice', async () => {
+  const blog = {
+    author: 'Max Verstappen',
+    title: 'Driving for redbull',
+    url: 'https://redbull.com',
+    likes: 10
+  }
+
+  const mockHandler = vi.fn()
+
+  render(
+    <Blog blog={blog} addLike={mockHandler} />
+  )
+
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
