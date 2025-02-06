@@ -16,6 +16,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
+  const noteFormRef = useRef()
 
   useEffect(() => {
     noteService
@@ -61,8 +62,6 @@ const App = () => {
   if (!notes) {
     return null
   }
-
-  const noteFormRef = useRef()
 
   const addNote = (noteObj) => {
     noteFormRef.current.toggleVisibility()
