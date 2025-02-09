@@ -28,7 +28,7 @@ const LoginForm = ({ handleLogin, username, password, setPassword, setUsername, 
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit">log in</button>
       </form>
       <button onClick={() => setLoginVisible(false)}>cancel</button>
     </div>
