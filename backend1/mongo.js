@@ -9,7 +9,7 @@ const password = process.argv[2]
 
 const url = `mongodb+srv://chimonegarvin27:${password}@cluster1.9bvc8.mongodb.net/noteApp?retryWrites=true&w=majority`
 
-mongoose.set("strictQuery", false)
+mongoose.set("stri5ctQuery", false)
 
 mongoose.connect(url)
 
