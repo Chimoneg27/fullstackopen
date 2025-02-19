@@ -5,6 +5,7 @@ const LoginForm = ({ handleLogin, username, password, setPassword, setUsername }
         <label htmlFor="username">Username</label>
         <input
           type="text"
+          data-testid="username"
           value={username}
           name="username"
           id="username"
@@ -15,6 +16,7 @@ const LoginForm = ({ handleLogin, username, password, setPassword, setUsername }
         <label htmlFor="password">Password</label>
         <input
           type="password"
+          data-testid="password"
           value={password}
           name="password"
           id="password"
