@@ -16,7 +16,7 @@ beforeEach(async () => {
   await Blog.insertMany(helper.initialBlogs)
 })
 
-describe('when some notes are saved', () => {
+describe('when some blogs are saved', () => {
 
   test('blogs are returned as json', async () => {
     await api
