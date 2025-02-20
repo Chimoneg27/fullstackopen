@@ -42,5 +42,18 @@ describe('BlogList App is shown', () => {
       const blogDiv = await page.locator('.blog')
       await expect(blogDiv).toContainText('Testing Apps')
     })
+
+    describe('blog can be liked', () => {
+      beforeEach(async ({ page }) => {
+        await createBlog(page, 'new tests', 'Matti', 'https://something.com')
+      })
+
+      test('user can like a blog', async ({ page }) => {
+        await page.getByRole('button', { name: 'view' }).click()
+        await page.getByRole('button', { name: 'like' }).click()
+        const blogDiv = await page.locator('.blog')
+        await expect(blogDiv).toContainText('Likes: 1')
+      })
+    })
   })
 })
