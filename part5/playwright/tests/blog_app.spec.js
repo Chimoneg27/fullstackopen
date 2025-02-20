@@ -1,5 +1,5 @@
 const { test, expect, describe, beforeEach } = require('@playwright/test')
-const { loginWith } = require('./helper')
+const { loginWith, createBlog } = require('./helper')
 
 describe('BlogList App is shown', () => {
   beforeEach(async ({ page, request }) => {
@@ -29,9 +29,18 @@ describe('BlogList App is shown', () => {
   })
 
   describe('when logged in', () => {
-    test('user can log in', async ({ page }) => {
+    beforeEach(async ({ page }) => {
       await loginWith(page, 'mluukkai', 'salainen')
+    })
+
+    test('user can log in', async ({ page }) => {
       await expect(page.getByText('Matti Luukkainen')).toBeVisible()
+    })
+
+    test('user can create a blog', async ({ page }) => {
+      await createBlog(page, 'Testing Apps', 'Matti', 'https://fullstackopen')
+      const blogDiv = await page.locator('.blog')
+      await expect(blogDiv).toContainText('Testing Apps')
     })
   })
 })
