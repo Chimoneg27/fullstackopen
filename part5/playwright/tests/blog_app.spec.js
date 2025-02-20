@@ -57,3 +57,11 @@ describe('BlogList App is shown', () => {
     })
   })
 })
+
+/*
+Side Note
+
+I did not write the tests from 5.21 to 5.23
+
+I realized that I did not implement some features like the one for 5.22
+*/
