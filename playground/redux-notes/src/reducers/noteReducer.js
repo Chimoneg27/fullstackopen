@@ -1,5 +1,3 @@
-import { createStore } from "redux";
-
 const noteReducer = (state = [], action) => {
   switch(action.type) {
     case 'NEW_NOTE':
@@ -17,17 +15,6 @@ const noteReducer = (state = [], action) => {
     }
     default: return state
   }
-}; 
-
-const store = createStore(noteReducer);
-
-store.dispatch({
-  type: "NEW_NOTE",
-  payload: {
-    content: "the app state is in redux store",
-    important: true,
-    id: 1,
-  },
-});
+};
 
 export default noteReducer;
