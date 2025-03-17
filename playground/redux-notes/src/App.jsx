@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import { createStore } from "redux";
+const generateId = () => Number((Math.random() * 1000000).toFixed(0));
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const addNote = (event) => {
+    event.preventDefault();
+    const content = event.target.note.value;
+    event.target.note.value = "";
+    store.dispatch(createNote(content))
+  };
+
+  const createNote = (content) => {
+    return {
+      type: 'NEW_NOTE',
+      payload: {
+        content,
+        important: false,
+        id: generateId()
+      }
+    }
+  }
+  
+  const toggleImportanceOf = (id) => {
+    return {
+      type: 'TOGGLE_IMPORTANCE',
+      payload: { id }
+    }
+  }
+
+  const toggleImportance = (id) => {
+    store.dispatch(toggleImportanceOf(id))
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <form onSubmit={addNote}>
+        <input name="note" />
+        <button type="submit">add</button>
+      </form>
 
-export default App
+      <ul>
+        {store.getState().map((note) => (
+          <li key={note.id} onClick={() => toggleImportance(note.id)}>
+            {note.content} <strong>{note.important ? "important" : ""}</strong>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default App;
