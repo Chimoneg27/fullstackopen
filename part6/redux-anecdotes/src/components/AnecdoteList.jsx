@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) =>
-    [...state.anecdotes].sort((a, b) => b.votes - a.votes)
-  );
+  const anecdotes = useSelector((state) => state.anecdotes);
+  const filter = useSelector((state) => state.filter)
   const dispatch = useDispatch();
 
   const vote = (id) => {
@@ -13,10 +12,14 @@ const AnecdoteList = () => {
     });
   };
 
+  const filteredAnecdotes = anecdotes.filter((anecdote) =>
+    anecdote.content.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map((anecdote) => (
+      {filteredAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>

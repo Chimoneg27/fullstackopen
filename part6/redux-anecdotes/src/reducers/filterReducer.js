@@ -1,11 +1,9 @@
-const initialState = []
+const initialState = ''
 
 const filterReducer = (state = initialState, action) => {
   switch (action.type) {
     case "search":
-      return state.filter((anecdote) => {
-        return anecdote.content.toLowerCase().includes(action.payload);
-      });
+      return action.payload
     default: 
       return state
   }
