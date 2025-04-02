@@ -2,7 +2,8 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { voteFor, getAnecdotes } from './requests'
-import { useReducer } from "react"
+import { useReducer, useContext } from "react"
+import notifyContext from './notifyContext'
 
 const notifyReducer = (state, action) => {
   switch (action.type) {
@@ -24,12 +25,20 @@ const App = () => {
   const voteForMutation = useMutation({
     mutationFn: voteFor,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryClient: ['anecdotes'] })
+      queryClient.invalidateQueries(['anecdotes'])
     }
   })
 
   const handleVote = (anecdote) => {
-    voteForMutation.mutate({...anecdote, votes: anecdote.votes + 1})
+    voteForMutation.mutate(
+      {...anecdote, votes: anecdote.votes + 1},
+      {
+        onSuccess: () => {
+          notificationDispatch({ type: 'vote', payload: anecdote.content })
+          setTimeout(() => notificationDispatch({ type: 'clear' }), 5000)
+        }
+      }
+    )
   }
 
   const result = useQuery(
@@ -48,10 +57,29 @@ const App = () => {
 
   const anecdotes = result.data
 
+  const Display = () => {
+    const [notification] = useContext(notifyContext)
+    return <div>{notification}</div>
+  }
+
+  const Button = ({type, label, func}) => {
+    const [notification, dispatch] = useContext(notifyContext)
+    return (
+      <button onClick={() => {
+        dispatch({type});
+        func()
+        }}>
+          vote
+        {label}
+      </button>
+    )
+  }
+
   return (
+    <notifyContext.Provider value={[notification, notificationDispatch]}>
     <div>
       <h3>Anecdote app</h3>
-      <div>{notification}</div>
+      <Display />
       {/* <Notification /> */}
       <AnecdoteForm />
     
@@ -62,19 +90,12 @@ const App = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => {
-              handleVote(anecdote);
-              notificationDispatch({ type: 'vote', payload: anecdote.content });
-              setTimeout(() => {
-                notificationDispatch({ type: 'clear' }); 
-              }, 5000);
-              }}>
-                vote
-              </button>
+            <Button func={() => handleVote(anecdote)}/>
           </div>
         </div>
       )}
     </div>
+    </notifyContext.Provider>
   )
 }
 
