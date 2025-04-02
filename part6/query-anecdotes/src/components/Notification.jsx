@@ -1,31 +1,22 @@
-import { useReducer, createContext } from "react"
-
-const notifyReducer = (state, action) => {
-  switch (action.type) {
-    case 'create':
-      return `anecdote '${action.payload}' created `
-    case 'vote':
-      return `anecdote ${action.payload} was voted for`
-    case 'clear':
-      return ''
-    default:
-      return state
-  }
-}
+import { useContext } from "react"
+import NotifyContext from "../NotifyContext"
 
 const Notification = () => {
   const style = {
     border: 'solid',
     padding: 10,
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
+    zindex: 2
   }
-  
-  if (true) return null
+
+  const [notification] = useContext(NotifyContext)
+
+  if(!notification) return null
 
   return (
     <div style={style}>
-      
+      {notification}
     </div>
   )
 }
