@@ -5,6 +5,7 @@ import AnecdoteList from "./components/AnecdoteList";
 import About from "./components/About";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu";
+import Anecdote from "./components/Anecdotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {
@@ -52,6 +53,7 @@ const App = () => {
         <Menu />
       </div>
       <Routes>
+        <Route path="/anecdotes/:id" element={<Anecdote anecdotes={anecdotes}/>}></Route>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path="/create" element={<CreateNew addNew={addNew}/>} />
         <Route path="/about" element={<About />} />
