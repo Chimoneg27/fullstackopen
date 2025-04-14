@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { createNotification, clearNotification } from '../reducers/notificationReducer'
+import Notification from './components/Notification'
 
 const Blog = ({ blog, addLike, removeBlog }) => {
   const [visible, setVisible] = useState(false)
@@ -17,23 +19,24 @@ const Blog = ({ blog, addLike, removeBlog }) => {
     marginBottom: 5
   }
 
-
-
   return(
-    <div style={blogStyle} className='blog'>
-      <div style={hidden}>
-        <h2>Title: {blog.title} <button onClick={toggleVisibility}>view</button></h2>
-      </div>
+    <>
+      <Notification />
+      <div style={blogStyle} className='blog'>
+        <div style={hidden}>
+          <h2>Title: {blog.title} <button onClick={toggleVisibility}>view</button></h2>
+        </div>
 
-      <div style={show}>
-        <h2>Title: {blog.title} <button onClick={toggleVisibility}>hide</button></h2>
-        <h2>Link: {blog.url}</h2>
-        <p>Likes: {blog.likes} <button onClick={() => addLike(blog)}>like</button></p>
-        <h2>{blog.author}</h2>
+        <div style={show}>
+          <h2>Title: {blog.title} <button onClick={toggleVisibility}>hide</button></h2>
+          <h2>Link: {blog.url}</h2>
+          <p>Likes: {blog.likes} <button onClick={() => addLike(blog)}>like</button></p>
+          <h2>{blog.author}</h2>
 
-        <button onClick={() => removeBlog(blog)}>delete</button>
+          <button onClick={() => removeBlog(blog)}>delete</button>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
