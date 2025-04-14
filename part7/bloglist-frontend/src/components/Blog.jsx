@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import { createNotification, clearNotification } from '../reducers/notificationReducer'
-import Notification from './components/Notification'
+import Notification from './Notification'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Blog = ({ blog, addLike, removeBlog }) => {
   const [visible, setVisible] = useState(false)
+  const blogs = useSelector((state) => state.blogs)
+  const dispatch = useDispatch()
 
-  const hidden = { display: visible ? 'none' : '' }
-  const show  = { display: visible ? '': 'none' }
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
+  const toggleVisibility = (id) => {
+    setVisible((prev) => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
   }
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -22,19 +26,26 @@ const Blog = ({ blog, addLike, removeBlog }) => {
   return(
     <>
       <Notification />
-      <div style={blogStyle} className='blog'>
-        <div style={hidden}>
-          <h2>Title: {blog.title} <button onClick={toggleVisibility}>view</button></h2>
-        </div>
+      <div className='blog'>
+        {blogs.map((blog) => {
+          const isVisible = visible[blog.id] || false
+          return (
+            <div key={blog.id} style={blogStyle} className='blog'>
+              <div  style={{ display: isVisible ? 'none' : '' }}>
+                <h2>Title: {blog.title}{' '}
+                  <button onClick={() => toggleVisibility(blog.id)}>view</button></h2>
+              </div>
 
-        <div style={show}>
-          <h2>Title: {blog.title} <button onClick={toggleVisibility}>hide</button></h2>
-          <h2>Link: {blog.url}</h2>
-          <p>Likes: {blog.likes} <button onClick={() => addLike(blog)}>like</button></p>
-          <h2>{blog.author}</h2>
-
-          <button onClick={() => removeBlog(blog)}>delete</button>
-        </div>
+              <div style={{ display: isVisible ? '' : 'none' }}>
+                <h2>
+                  Title: {blog.title}{' '}
+                  <button onClick={() => toggleVisibility(blog.id)}>hide</button></h2>
+                <h2>Link: {blog.url}</h2>
+                <p>Likes: {blog.likes} <button onClick={() => addLike(blog)}>like</button></p>
+                <h2>{blog.author}</h2>
+              </div>
+            </div>
+          )})}
       </div>
     </>
   )

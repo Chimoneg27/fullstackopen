@@ -5,6 +5,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import { initializeBlogs } from './reducers/blogReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
   const [blogs, setBlogs] = useState(null)
@@ -12,15 +14,14 @@ const App = () => {
   const [createdBlogMessage, setCreatedBlogMessage] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const dispatch = useDispatch()
 
   const [user, setUser] = useState(null)
   const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(sortBlogs(blogs))
-    )
-  }, [])
+    dispatch(initializeBlogs())
+  })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
@@ -170,9 +171,7 @@ const App = () => {
 
             <br />
 
-            {blogs && blogs.map(blog => {
-              return <Blog key={blog.id} blog={blog} addLike={addLike} removeBlog={removeBlog}/>
-            })}
+            <Blog />
           </div>
 
       }
