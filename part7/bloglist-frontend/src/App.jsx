@@ -9,9 +9,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { useDispatch } from 'react-redux'
 
 const App = () => {
-  const [blogs, setBlogs] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
-  const [createdBlogMessage, setCreatedBlogMessage] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
@@ -21,7 +19,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
-  })
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
@@ -64,61 +62,8 @@ const App = () => {
     }
   }
 
-  const addBlog = (blogObj) => {
-    blogService
-      .create(blogObj)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setCreatedBlogMessage(`a new blog, ${blogObj.title}, has been added`)
-        setTimeout(() => {
-          setCreatedBlogMessage(null)
-        }, 5000)
-      })
-  }
-
-  const addLike = (blogL) => {
-    const blog = blogs.find(blog => blog.id === blogL.id)
-    blogService.setToken(user.token)
-
-    const updatedBlog = {
-      ...blog,
-      user: blog.user.id
-    }
-    blogService
-      .update(blog.id, updatedBlog).then(returnedBlog => {
-        setBlogs(blogs.map(b => b.id !== blogL.id ? b: returnedBlog))
-      })
-      .catch(error => {
-        setErrorMessage(
-          'You have already liked this post'
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-      })
-  }
-
   const sortBlogs = (blogsArr) => {
     return blogsArr.sort((a, b) => b.likes - a.likes)
-  }
-
-  const removeBlog = (blogTD) => {
-    const blogToDelete = blogs.find(blog => blog.id === blogTD.id)
-    blogService.setToken(user.token)
-
-    blogService
-      .remove(blogToDelete.id)
-      .then(() => {
-        setBlogs(blogs.filter(blog => blog.id !== blogToDelete.id))
-      })
-      .catch(error => {
-        setErrorMessage(
-          error
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-      })
   }
 
   const hidenWhenVisible = { display: blogFormVisible ? 'none' : '' }
@@ -146,7 +91,6 @@ const App = () => {
             <h2>blogs</h2>
 
             <Notification
-              message={createdBlogMessage}
               type="success"
             />
 
@@ -162,9 +106,7 @@ const App = () => {
                 <button onClick={() => setBlogFormVisible(true)}>new blog</button>
               </div>
               <div style={showWhenVisible}>
-                <BlogForm
-                  createBlog={addBlog}
-                />
+                <BlogForm />
                 <button onClick={() => setBlogFormVisible(false)}>close</button>
               </div>
             </div>

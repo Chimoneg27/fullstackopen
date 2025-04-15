@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { createNotification, clearNotification } from '../reducers/notificationReducer'
+import { likeBlog } from '../reducers/blogReducer'
 import Notification from './Notification'
 import { useDispatch, useSelector } from 'react-redux'
 
-const Blog = ({ blog, addLike, removeBlog }) => {
-  const [visible, setVisible] = useState(false)
+const Blog = () => {
+  const [visible, setVisible] = useState({})
   const blogs = useSelector((state) => state.blogs)
   const dispatch = useDispatch()
 
@@ -13,6 +14,15 @@ const Blog = ({ blog, addLike, removeBlog }) => {
       ...prev,
       [id]: !prev[id]
     }))
+  }
+
+  const addLike = (blog) => {
+    dispatch(likeBlog(blog))
+    dispatch(createNotification(`a new blog, ${blog.title}, has been added`))
+
+    setTimeout(() => {
+      dispatch(clearNotification())
+    }, 5000)
   }
 
   const blogStyle = {
@@ -43,6 +53,8 @@ const Blog = ({ blog, addLike, removeBlog }) => {
                 <h2>Link: {blog.url}</h2>
                 <p>Likes: {blog.likes} <button onClick={() => addLike(blog)}>like</button></p>
                 <h2>{blog.author}</h2>
+
+                <button>delete</button>
               </div>
             </div>
           )})}
