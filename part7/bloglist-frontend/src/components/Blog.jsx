@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createNotification, clearNotification } from '../reducers/notificationReducer'
-import { likeBlog } from '../reducers/blogReducer'
+import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 import Notification from './Notification'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -23,6 +23,10 @@ const Blog = () => {
     setTimeout(() => {
       dispatch(clearNotification())
     }, 5000)
+  }
+
+  const removeBlog = async (blog) => {
+    dispatch(deleteBlog(blog))
   }
 
   const blogStyle = {
@@ -54,7 +58,7 @@ const Blog = () => {
                 <p>Likes: {blog.likes} <button onClick={() => addLike(blog)}>like</button></p>
                 <h2>{blog.author}</h2>
 
-                <button>delete</button>
+                <button onClick={() => removeBlog(blog)} >delete</button>
               </div>
             </div>
           )})}
