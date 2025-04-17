@@ -9,7 +9,6 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { useDispatch } from 'react-redux'
 
 const App = () => {
-  const [errorMessage, setErrorMessage] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
@@ -46,11 +45,8 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch (exception) {
-      setErrorMessage('Wrong username or password')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+    } catch (error) {
+      return error.message
     }
   }
 
@@ -75,8 +71,6 @@ const App = () => {
         user === null?
           <div>
             <Notification
-              message={errorMessage}
-              type="error"
             />
             <LoginForm
               username={username}
