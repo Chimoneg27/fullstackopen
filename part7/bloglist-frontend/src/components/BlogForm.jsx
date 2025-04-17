@@ -1,21 +1,22 @@
-import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
 
-const BlogForm = ({ createBlog }) => {
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+const BlogForm = () => {
+  const dispatch = useDispatch()
 
   const addBlog = (event) => {
     event.preventDefault()
-    createBlog({
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    })
 
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
+    const title = event.target.title.value
+    const author = event.target.author.value
+    const url = event.target.url.value
+
+    dispatch(createBlog({
+      title,
+      author,url
+    }))
+
+    event.target.reset()
   }
 
   return (
@@ -23,33 +24,27 @@ const BlogForm = ({ createBlog }) => {
       <div>
         <label htmlFor="title">Title</label>
         <input type="text"
-          value={newTitle}
           data-testid="title"
           name="title"
           id="title"
-          onChange={event => setNewTitle(event.target.value)}
           placeholder='Title'
         />
       </div>
       <div>
         <label htmlFor="author">Author</label>
         <input type="text"
-          value={newAuthor}
           data-testid="author"
           name="author"
           id="author"
-          onChange={event => setNewAuthor(event.target.value)}
           placeholder='Author'
         />
       </div>
       <div>
         <label htmlFor="url">URL</label>
         <input type="text"
-          value={newUrl}
           name="url"
           data-testid="url"
           id="url"
-          onChange={event => setNewUrl(event.target.value)}
           placeholder='URL'
         />
       </div>

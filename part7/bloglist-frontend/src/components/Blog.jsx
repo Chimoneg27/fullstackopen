@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { createNotification, clearNotification } from '../reducers/notificationReducer'
 import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 import Notification from './Notification'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,11 +17,6 @@ const Blog = () => {
 
   const addLike = (blog) => {
     dispatch(likeBlog(blog))
-    dispatch(createNotification(`a new blog, ${blog.title}, has been added`))
-
-    setTimeout(() => {
-      dispatch(clearNotification())
-    }, 5000)
   }
 
   const removeBlog = async (blog) => {

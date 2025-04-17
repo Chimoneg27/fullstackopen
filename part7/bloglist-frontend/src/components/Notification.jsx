@@ -5,11 +5,19 @@ const Notification = ({ message, type }) => {
 
   if (!notification) return null
 
-  const classed = type === 'error' ? 'error' : 'blogCreated'
+  const style = {
+    color: notification.type === 'error' ? 'red' : 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
 
   return (
     <>
-      <div className={classed}>
+      <div style={style} className='notification'>
         {message}
       </div>
     </>

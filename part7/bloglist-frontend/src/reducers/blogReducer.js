@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
+import showNotification from '../reducers/notificationReducer'
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -32,8 +33,14 @@ export const initializeBlogs = () => {
 
 export const createBlog = content => {
   return async dispatch => {
-    const newBlog = await blogService.create(content)
-    dispatch(appendBlog(newBlog))
+    try {
+      const newBlog = await blogService.create(content)
+      dispatch(appendBlog(newBlog))
+      dispatch(showNotification(`New blog ${content.title} by ${content.author} added`))
+    }
+    catch (error) {
+      dispatch(showNotification('Failed to create blog', 'error'))
+    }
   }
 }
 
@@ -46,16 +53,26 @@ export const likeBlog = (blog) => {
         url: blog.url,
       })
       dispatch(like(updatedBlog))
+      dispatch(showNotification(`You liked "${blog.title}"`, 'success'))
     } catch (error) {
-      console.log(error)
+      dispatch(showNotification('Failed to like blog', 'error'))
     }
   }
 }
 
 export const deleteBlog = (blog) => {
   return async (dispatch) => {
-    await blogService.remove(blog.id)
-    dispatch(removeBlog(blog.id))
+    try{
+      await blogService.remove(blog.id)
+      dispatch(removeBlog(blog.id))
+      dispatch(showNotification(`Successfully deleted ${blog.title}, success`))
+    } catch (error) {
+      if(error.response?.status === 403) {
+        dispatch(showNotification('You can only delete blogs you created'))
+      } else {
+        dispatch(showNotification('Failed to delete the blog'))
+      }
+    }
   }
 }
 
