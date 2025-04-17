@@ -58,10 +58,6 @@ const App = () => {
     }
   }
 
-  const sortBlogs = (blogsArr) => {
-    return blogsArr.sort((a, b) => b.likes - a.likes)
-  }
-
   const hidenWhenVisible = { display: blogFormVisible ? 'none' : '' }
   const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
@@ -73,11 +69,6 @@ const App = () => {
             <Notification
             />
             <LoginForm
-              username={username}
-              password={password}
-              handleLogin={handleLogin}
-              setUsername={setUsername}
-              setPassword={setPassword}
             />
           </div>
           :
