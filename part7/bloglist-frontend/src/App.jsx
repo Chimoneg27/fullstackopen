@@ -6,14 +6,13 @@ import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import { initializeBlogs } from './reducers/blogReducer'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { logIn, userLogout } from './reducers/loginReducer'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.login)
 
-  const [user, setUser] = useState(null)
   const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
@@ -24,38 +23,13 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if(loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(logIn(user))
       blogService.setToken(user.token)
     }
-  }, [])
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-
-      window.localStorage.setItem(
-        'loggedBlogUser', JSON.stringify(user)
-      )
-
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (error) {
-      return error.message
-    }
-  }
+  }, [dispatch])
 
   const handleLogout = () => {
-    const loggedUserJSON = window.localStorage.removeItem('loggedBlogUser')
-    if(loggedUserJSON) {
-      window.localStorage.removeItem(loggedUserJSON)
-      window.localStorage.clear()
-    }
+    dispatch(userLogout())
   }
 
   const hidenWhenVisible = { display: blogFormVisible ? 'none' : '' }
@@ -80,7 +54,7 @@ const App = () => {
             />
 
             <div>
-              <h2>{user.name}</h2>
+              <h2>{user.name} logged in</h2>
               <button onClick={handleLogout}>logout</button>
             </div>
 
