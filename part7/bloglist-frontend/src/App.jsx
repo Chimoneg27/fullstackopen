@@ -64,24 +64,27 @@ const App = () => {
                 </div>
 
                 <Routes>
-                  <Route path='/blogs' element={<Blog />} />
+                  <Route path='/blogs' element={
+                    <>
+                      <h2>blogs</h2>
+
+                      <Notification type="success" />
+
+                      <div>
+                        <h2>{user.name} logged in</h2>
+                        <button onClick={handleLogout}>logout</button>
+                      </div>
+                      <br />
+                      <BlogForm />
+                      <br />
+
+                      <Blog />
+                    </>
+                  } />
                   <Route path='/users/:id' element={<User users={users} />} />
                   <Route path='users' element={<Users />} />
                 </Routes>
               </Router>
-              <h2>blogs</h2>
-
-              <Notification type="success" />
-
-              <div>
-                <h2>{user.name} logged in</h2>
-                <button onClick={handleLogout}>logout</button>
-              </div>
-              <br />
-              <BlogForm />
-              <br />
-
-              <Blog />
             </div>
         }
       </div>
