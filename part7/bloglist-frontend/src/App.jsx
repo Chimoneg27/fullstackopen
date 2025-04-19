@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import BlogForm from './components/BlogForm'
 import Users from './components/Users'
+import User from './pages/User'
 import Notification from './components/Notification'
 import { initializeBlogs } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,6 +18,8 @@ import { initializeUsers } from './reducers/usersReducer'
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.login)
+  const users = useSelector((state => state.users))
+  console.log(users)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -45,17 +48,6 @@ const App = () => {
 
   return (
     <>
-      <Router>
-        <div>
-          <Link style={padding} to="/blogs">blogs</Link>
-          <Link style={padding} to="/users">users</Link>
-        </div>
-
-        <Routes>
-          <Route path='/blogs' element={<Blog />} />
-          <Route path='users' element={<Users />} />
-        </Routes>
-      </Router>
       <div>
         {
           user === null?
@@ -65,6 +57,18 @@ const App = () => {
             </div>
             :
             <div>
+              <Router>
+                <div>
+                  <Link style={padding} to="/blogs">blogs</Link>
+                  <Link style={padding} to="/users">users</Link>
+                </div>
+
+                <Routes>
+                  <Route path='/blogs' element={<Blog />} />
+                  <Route path='/users/:id' element={<User users={users} />} />
+                  <Route path='users' element={<Users />} />
+                </Routes>
+              </Router>
               <h2>blogs</h2>
 
               <Notification type="success" />
