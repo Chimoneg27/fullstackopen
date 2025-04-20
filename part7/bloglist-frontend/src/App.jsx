@@ -8,13 +8,14 @@ import User from './pages/User'
 import Notification from './components/Notification'
 import { initializeBlogs } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import { logIn, userLogout } from './reducers/loginReducer'
+import { logIn } from './reducers/loginReducer'
 import {
   BrowserRouter as Router,
   Routes, Route, Link
 } from 'react-router-dom'
 import { initializeUsers } from './reducers/usersReducer'
 import BlogPage from './pages/BlogPage'
+import Navbar from './components/Navbar'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -39,9 +40,6 @@ const App = () => {
     }
   }, [dispatch])
 
-  const handleLogout = () => {
-    dispatch(userLogout())
-  }
 
   const padding = {
     padding: 5
@@ -59,27 +57,16 @@ const App = () => {
             :
             <div>
               <Router>
-                <div>
-                  <Link style={padding} to="/blogs">blogs</Link>
-                  <Link style={padding} to="/users">users</Link>
-                </div>
+                <Navbar />
 
                 <Routes>
                   <Route path='/blogs/:id' element={<BlogPage blogs={blogs}/>}/>
-                  <Route path='/blogs' element={
+                  <Route path='/' element={
                     <>
                       <h2>blogs</h2>
-
                       <Notification type="success" />
-
-                      <div>
-                        <h2>{user.name} logged in</h2>
-                        <button onClick={handleLogout}>logout</button>
-                      </div>
-                      <br />
                       <BlogForm />
                       <br />
-
                       <Blog />
                     </>
                   } />
