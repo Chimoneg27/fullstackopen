@@ -14,12 +14,13 @@ import {
   Routes, Route, Link
 } from 'react-router-dom'
 import { initializeUsers } from './reducers/usersReducer'
+import BlogPage from './pages/BlogPage'
 
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.login)
   const users = useSelector((state => state.users))
-  console.log(users)
+  const blogs = useSelector((state) => state.blogs)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -64,6 +65,7 @@ const App = () => {
                 </div>
 
                 <Routes>
+                  <Route path='/blogs/:id' element={<BlogPage blogs={blogs}/>}/>
                   <Route path='/blogs' element={
                     <>
                       <h2>blogs</h2>
