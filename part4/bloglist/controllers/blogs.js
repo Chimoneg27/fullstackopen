@@ -20,6 +20,15 @@ blogsRouter.get('/:id', async (request, response) => {
   }
 })
 
+blogsRouter.get('/:id/comments', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  if(blog) {
+    response.json(blog.comments)
+  } else {
+    response.status(404).end()
+  }
+})
+
 blogsRouter.post('/', async (request, response) => {
   const user = request.user
   if (!user) {
