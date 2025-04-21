@@ -1,7 +1,6 @@
-POST http://localhost:3002/api/login 
+POST http://localhost:3002/api/blogs/6782d84bd2aec3c7d0a0d0e4/comments
 Content-Type: application/json
 
 {
-  "username": "Nico",
-  "password": "123456789"
+  "comment": "This is a test comment"
 }
