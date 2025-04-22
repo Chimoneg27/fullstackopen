@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logIn } from './reducers/loginReducer'
 import {
   BrowserRouter as Router,
-  Routes, Route, Link
+  Routes, Route
 } from 'react-router-dom'
 import { initializeUsers } from './reducers/usersReducer'
 import BlogPage from './pages/BlogPage'
@@ -40,11 +40,6 @@ const App = () => {
     }
   }, [dispatch])
 
-
-  const padding = {
-    padding: 5
-  }
-
   return (
     <>
       <div>
@@ -60,7 +55,7 @@ const App = () => {
                 <Navbar />
 
                 <Routes>
-                  <Route path='/blogs/:id' element={<BlogPage blogs={blogs}/>}/>
+                  <Route path='/blogs/:id' element={<BlogPage blogs={blogs} comments={blogs.comments}/>}/>
                   <Route path='/' element={
                     <>
                       <h2>blogs</h2>
