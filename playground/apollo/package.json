@@ -1,0 +1,15 @@
+{
+  "name": "apollo",
+  "version": "1.0.0",
+  "description": "learning graphql",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "Garvin Chimone",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.12.0",
+    "graphql": "^16.11.0"
+  }
+}
