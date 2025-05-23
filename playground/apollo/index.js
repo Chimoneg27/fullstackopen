@@ -43,7 +43,7 @@ const typeDefs = `
 const resolvers = {
   Query: {
     personCount: () => persons.length, // return the number of people
-    allPersons: () => persons,
+    allPersons: () => persons, // returns all persons
     findPerson: (root, args) =>
       persons.find(p => p.name === args.name)
   }
