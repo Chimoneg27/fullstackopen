@@ -106,6 +106,10 @@ const typeDefs = `
       author: String!
       genres: [String!]
     ): Book
+    editAuthor(
+      name: String!
+      born: String!
+    ): Author
   }
 
   type Book {
@@ -183,6 +187,14 @@ const resolvers = {
       }
       return newBook;
     },
+    editNumber: (root, args) => {
+      const author = authors.find(a => a.name === args.name)
+      if(!author) return null
+
+      const updateAuthor = { ...author, born: args.born }
+      authors = authors.map(a => a.name === args.name ? updateAuthor : a)
+      return updateAuthor
+    }
   },
 };
 
