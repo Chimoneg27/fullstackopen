@@ -109,6 +109,7 @@ const typeDefs = `
   type Author {
     name: String!
     born: String!
+    bookCount: Int! 
     id: ID
   }
 
@@ -117,14 +118,21 @@ const typeDefs = `
     authorCount: Int!
     findAuthor(name: String!): Author
     allBooks: [Book!]!
+    allAuthors: [Author!]!
   }
 `
-
+// line 112 made the mistake of using a nested bookcounts instead of just this bookCount: Int!
 const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: () => books
+    allBooks: () => books,
+    allAuthors: () => authors // allAuthors resolver must not just return author. check line 130 to 134
+  },
+  Author: { // add a custom resolver for the bookcount field line 112
+    bookCount: (root) => books.filter(book => book.author === root.name).length
+    // root is the author object returned by the allAuthors line 130
+    // now we use filter to match the author name in book object to the root.name 
   }
 }
 
@@ -134,7 +142,7 @@ const server = new ApolloServer({
 })
 
 startStandaloneServer(server, {
-  listen: { port: 4000 },
+  listen: { port: 4001 },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
