@@ -117,16 +117,23 @@ const typeDefs = `
     bookCount: Int!
     authorCount: Int!
     findAuthor(name: String!): Author
-    allBooks: [Book!]!
+    allBooks(author: String): [Book!]!
     allAuthors: [Author!]!
   }
 `
 // line 112 made the mistake of using a nested bookcounts instead of just this bookCount: Int!
 const resolvers = {
   Query: {
+    findAuthor: (root, args) =>
+      authors.find(a => a.name === args.name)
+    ,
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: () => books,
+    allBooks: (root, args) => {
+      if(!args.author) return books
+
+      return books.filter(book => book.author === args.author)
+    },
     allAuthors: () => authors // allAuthors resolver must not just return author. check line 130 to 134
   },
   Author: { // add a custom resolver for the bookcount field line 112
