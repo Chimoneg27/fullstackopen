@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, } from 'react'
 import { useMutation } from '@apollo/client'
 
@@ -23,7 +24,7 @@ const PhoneForm = ({ setError }) => {
     if (result.data && result.data.editNumber === null) {
       setError('person not found')
     }
-  })
+  }, [result.data])
 
   return (
     <div>
