@@ -1,31 +1,8 @@
-import { gql, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
+import { ALL_PERSONS, FIND_PERSON } from './queries'
 import './App.css'
 import { useState } from 'react'
-
-const ALL_PERSONS = gql`
-  query {
-    allPersons {
-      name
-      phone
-      id
-    }
-  }
-`
-
-const FIND_PERSON = gql`
-  query findPersonByName($nameToSearch: String!) {
-    findPerson(name: $nameToSearch) {
-      name
-      phone
-      id
-      address {
-        street
-        city
-      }
-    }
-  }
-`
-// $nameToSearch line 16 is the GraphQL variable
+import PersonForm from './Components/PersonForm'
 
 const Person = ({ person, onClose }) => {
   return (
@@ -84,6 +61,10 @@ function App() {
 
     <div>
       <Persons persons={result.data.allPersons}/>
+    </div>
+
+    <div>
+      <PersonForm/>
     </div>
     </>
   )
