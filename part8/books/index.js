@@ -106,7 +106,7 @@ const typeDefs = `
       author: String!
       genres: [String!]
     ): Book
-    editAuthor(
+    editNumber(
       name: String!
       born: String!
     ): Author
