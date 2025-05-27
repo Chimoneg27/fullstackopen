@@ -106,7 +106,7 @@ const typeDefs = `
       author: String!
       genres: [String!]!
     ): Book
-    editNumber(
+    editAuthor(
       name: String!
       born: String!
     ): Author
@@ -187,7 +187,7 @@ const resolvers = {
       }
       return newBook;
     },
-    editNumber: (root, args) => {
+    editAuthor: (root, args) => {
       const author = authors.find(a => a.name === args.name)
       if(!author) return null
 
