@@ -1,6 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 const { GraphQLError } = require("graphql");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -65,13 +65,6 @@ type Token {
   value: String!
 }
 
-  
-  type Query {
-    personCount: Int!
-    allPersons(phone: YesNo): [Person!]!
-    findPerson(name: String!): Person
-  }
-
   type Person {
     name: String!
     phone: String
@@ -79,12 +72,13 @@ type Token {
     id: ID!
   }
 
-  type Query {
-    personCount: Int!
-    allPersons: [Person!]!
-    findPerson(name: String!): Person
-    me: User
-  }
+type Query {
+  personCount: Int!
+  allPersons(phone: YesNo): [Person!]!
+  findPerson(name: String!): Person
+  me: User
+}
+
 
   type Mutation {
     addPerson(
@@ -111,8 +105,8 @@ type Token {
 
 const resolvers = {
   Query: {
-    personCount: () => async () => Person.collection.countDocuments(),
-    allPersons: (root, args) => {
+    personCount: async () => Person.collection.countDocuments(),
+    allPersons: async (root, args) => {
       if (!args.phone) {
         return Person.find({});
       }
@@ -133,15 +127,15 @@ const resolvers = {
       const person = new Person({ ...args });
 
       try {
-        await person.save()
+        await person.save();
       } catch (error) {
-        throw new GraphQLError('Saving person failed', {
+        throw new GraphQLError("Saving person failed", {
           extensions: {
-            code: 'BAD_USER_INPUT',
+            code: "BAD_USER_INPUT",
             invalidArgs: args.name,
-            error
-          }
-        })
+            error,
+          },
+        });
       }
       return person.save();
     },
@@ -150,50 +144,49 @@ const resolvers = {
       person.phone = args.name;
 
       try {
-        await person.save()
+        await person.save();
       } catch (error) {
-        throw new GraphQLError('Saving number failed', {
+        throw new GraphQLError("Saving number failed", {
           extensions: {
-            code: 'BAD_USER_INPUT',
+            code: "BAD_USER_INPUT",
             invalidArgs: args.name,
-            error
-          }
-        })
+            error,
+          },
+        });
       }
       return person.save;
     },
     createUser: async (root, args) => {
-      const user = new UserActivation({ username: args.username })
+      const user = new UserActivation({ username: args.username });
 
-      return user.save()
-        .catch(error => {
-          throw new GraphQLError('Creating the user failed', {
-            extensions: {
-              code: 'BAD_USER_INPUT',
-              invalidArgs: args.username,
-              error
-            }
-          })
-        })
+      return user.save().catch((error) => {
+        throw new GraphQLError("Creating the user failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.username,
+            error,
+          },
+        });
+      });
     },
     login: async (root, args) => {
-      const user = await User.findOne({ username: args.username })
+      const user = await User.findOne({ username: args.username });
 
-      if ( !user || args.password !== 'secret' ) {
-        throw new GraphQLError('wrong credentials', {
+      if (!user || args.password !== "secret") {
+        throw new GraphQLError("wrong credentials", {
           extensions: {
-            code: 'BAD_USER_INPUT'
-          }
-        })
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
 
       const userForToken = {
         username: user.username,
-        id: user._id
-      }
+        id: user._id,
+      };
 
-      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
-    }
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+    },
   },
 };
 
