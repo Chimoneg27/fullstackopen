@@ -1,6 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { v1: uuid } = require("uuid");
+const jwt = require('jsonwebtoken')
 const { GraphQLError } = require("graphql");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -54,6 +54,17 @@ const typeDefs = `
     YES
     NO
   }
+
+  type User {
+  username: String!
+  friends: [Person!]!
+  id: ID!
+}
+
+type Token {
+  value: String!
+}
+
   
   type Query {
     personCount: Int!
@@ -72,6 +83,7 @@ const typeDefs = `
     personCount: Int!
     allPersons: [Person!]!
     findPerson(name: String!): Person
+    me: User
   }
 
   type Mutation {
@@ -86,6 +98,14 @@ const typeDefs = `
       name: String!
       phone: String!
     ): Person
+
+    createUser(
+      username: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `;
 
@@ -142,6 +162,38 @@ const resolvers = {
       }
       return person.save;
     },
+    createUser: async (root, args) => {
+      const user = new UserActivation({ username: args.username })
+
+      return user.save()
+        .catch(error => {
+          throw new GraphQLError('Creating the user failed', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.username,
+              error
+            }
+          })
+        })
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
+
+      if ( !user || args.password !== 'secret' ) {
+        throw new GraphQLError('wrong credentials', {
+          extensions: {
+            code: 'BAD_USER_INPUT'
+          }
+        })
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id
+      }
+
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+    }
   },
 };
 
