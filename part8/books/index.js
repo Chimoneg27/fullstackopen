@@ -2,6 +2,25 @@ const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const { v1: uuid } = require("uuid");
 
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
+const Book = require("./models/books");
+const Author = require("./models/author");
+
+require("dotenv").config();
+const MONGODB_URI = process.env.MONGODB_URI;
+
+console.log("connecting to", MONGODB_URI);
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log("connected to mongodb");
+  })
+  .catch((error) => {
+    console.log("error connection to MongoDB:", error.message);
+  });
+
 let authors = [
   {
     name: "Robert Martin",
@@ -108,14 +127,14 @@ const typeDefs = `
     ): Book
     editAuthor(
       name: String!
-      born: String!
+      setBornTo: Int!
     ): Author
   }
 
   type Book {
     title: String!
     published: String!
-    author: String!
+    author: Author!
     genres: [String!]
     id: ID
   }
@@ -135,33 +154,30 @@ const typeDefs = `
     allAuthors: [Author!]!
   }
 `;
-// line 112 made the mistake of using a nested bookcounts instead of just this bookCount: Int!
+
 const resolvers = {
   Query: {
-    findAuthor: (root, args) => authors.find((a) => a.name === args.name),
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      let filtered = books;
+    findAuthor: (root, args) => Author.findOne({ name: args.name }),
+    bookCount: async () => Book.collection.countDocuments(),
+    authorCount: async () => Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
+      let filtered = {}; // starts empty
 
-      if (args.author) {
-        filtered = filtered.filter((book) => book.author === args.author);
+      if (args.author) { // if args.author exists it add { author: "Author Name" }
+        filtered.author = args.author
       }
 
-      if (args.genre) {
-        filtered = filtered.filter((book) => book.genres.includes(args.genre));
+      if (args.genre) { //if args.genre exists it adds { genres: {$in: ["genre"]} }
+        filtered.genres = { $in: [args.genre] }
       }
 
-      return filtered;
+      return await Book.find(filter);
     },
-    allAuthors: () => authors, // allAuthors resolver must not just return author. check line 130 to 134
+    allAuthors: () => authors,
   },
   Author: {
-    // add a custom resolver for the bookcount field line 112
     bookCount: (root) =>
       books.filter((book) => book.author === root.name).length,
-    // root is the author object returned by the allAuthors line 130
-    // now we use filter to match the author name in book object to the root.name
   },
   Mutation: {
     addBook: (root, args) => {
@@ -188,13 +204,13 @@ const resolvers = {
       return newBook;
     },
     editAuthor: (root, args) => {
-      const author = authors.find(a => a.name === args.name)
-      if(!author) return null
+      const author = authors.find((a) => a.name === args.name);
+      if (!author) return null;
 
-      const updateAuthor = { ...author, born: args.born }
-      authors = authors.map(a => a.name === args.name ? updateAuthor : a)
-      return updateAuthor
-    }
+      const updateAuthor = { ...author, born: args.born };
+      authors = authors.map((a) => (a.name === args.name ? updateAuthor : a));
+      return updateAuthor;
+    },
   },
 };
 
