@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Book = require("./models/books");
 const Author = require("./models/author");
+const { GraphQLError } = require("graphql");
 
 require("dotenv").config();
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -186,25 +187,45 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args) => {
       const book = new Book({...args})
+      try {
+        let authorExists = await Author.findOne({ name: args.author });
 
-      let authorExists = await Author.findOne({ name: args.name });
-
-      if (!authorExists) {
-        const newAuthor = new Author({
-          name: args.author,
-          born: null,
-        });
-        await newAuthor.save();
+        if (!authorExists) {
+          const newAuthor = new Author({
+            name: args.author,
+            born: null,
+          });
+          await newAuthor.save();
+        }
+        await book.save();
+      } catch (error) {
+        throw new GraphQLError('saving book failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.author,
+            error
+          }
+        })
       }
-      return book.save();
+      return book
     },
     editAuthor: async (root, args) => {
-      const updatedAuthor = await Author.findByIdAndUpdate(
+      try {
+        const updatedAuthor = await Author.findOneAndUpdate(
         { name: args.name },
         { born: args.setBornTo },
         { new: true }
       )
       return updatedAuthor
+      } catch (error) {
+        throw new GraphQLError('saving birth date field failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error
+          }
+        })
+      }
     },
   },
 };
