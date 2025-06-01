@@ -1,8 +1,9 @@
-import { useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import { ALL_PERSONS, FIND_PERSON } from "./queries";
 import "./App.css";
 import { useState } from "react";
 import PersonForm from "./Components/PersonForm";
+import PhoneForm from "./Components/PhoneForm";
 
 const Person = ({ person, onClose }) => {
   return (
@@ -52,9 +53,17 @@ const Persons = ({ persons }) => {
 function App() {
   const result = useQuery(ALL_PERSONS); // returns an object with many fields
   const [errorMessage, setErrorMessage] = useState(null)
+  const [token, setToken] = useState(null)
+  const client = useApolloClient()
 
   if (result.loading) {
     return <div>loading...</div>; // waiting for the response from the useQuery(ALL_Persons) line 15
+  }
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
   }
 
   const notify = (message) => {
@@ -64,14 +73,29 @@ function App() {
     }, 10000)
   }
 
+  if(!token) {
+    return (
+      <div>
+      <Notify errorMessage={errorMessage} />
+        <h2>Login</h2>
+        <LoginForm
+          setToken={setToken}
+          setError={notify}
+        />
+      </div>
+    )
+  }
+
   return (
     <>
       <h1>Apollo Client Practice</h1>
 
       <div>
         <Notify errorMessage={errorMessage}/>
+        <button onClick={logout}>logout</button>
         <Persons persons={result.data.allPersons} />
         <PersonForm setError={notify}/>
+        <PhoneForm setError={notify} />
       </div>
 
         
