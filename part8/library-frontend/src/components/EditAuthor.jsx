@@ -20,16 +20,25 @@ const EditAuthor = () => {
 
   const submit = (event) => {
     event.preventDefault()
-    if (!selectedAuthor) return
+    
+    if (!selectedAuthor) {
+      alert('Please select an author')
+      return
+    }
+    
+    if (!born || born.trim() === '') {
+      alert('Please enter a birth year')
+      return
+    }
 
     changeBorn({
-        variables: {
-            name: selectedAuthor.value, 
-            born
-        }
+      variables: {
+        name: selectedAuthor.value,
+        setBornTo: born.trim()
+      }
     })
 
-    selectedAuthor(null)
+    setSelectedAuthor(null)
     setBorn('')
   }
 
