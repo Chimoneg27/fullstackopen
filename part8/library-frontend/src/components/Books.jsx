@@ -2,15 +2,11 @@ import { useQuery } from "@apollo/client"
 import { ALL_BOOKS } from "../services/queries"
 
 const Books = () => {
-  const books = useQuery(ALL_BOOKS)
-  
-  if (books.loading) {
-    return <div>loading...</div>
-  }
+  const { data, loading, error } = useQuery(ALL_BOOKS)
 
-  if (books.error) {
-    return <div>Error: {books.error.message}</div>
-  }
+  if (loading) return <div>loading...</div>
+  if (error) return <div>Error: {error.message}</div>
+  if (!data || !data.allBooks) return <div>No books found.</div>
 
   return (
     <div>
@@ -22,7 +18,7 @@ const Books = () => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.data.allBooks.map((book) => (
+          {data.allBooks.map((book) => (
             <tr key={book.title}>
               <td>{book.title}</td>
               <td>{book.author.name}</td>
@@ -34,5 +30,6 @@ const Books = () => {
     </div>
   )
 }
+
 
 export default Books
