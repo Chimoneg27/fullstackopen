@@ -16,10 +16,14 @@ const PersonForm = ({ setError }) => {
     }
   }); // // with destructuring, we get the first element of the array returned by useMutation — the mutation function
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
 
-    createPerson({ variables: { name, phone, street, city } }); // query variables recieve values when the query is made
+    await createPerson({ variables: { 
+      name, street, city,
+      phone: phone.length > 0 ? phone : undefined
+    } 
+    }); // query variables recieve values when the query is made
     setName("");
     setPhone("");
     setStreet("");

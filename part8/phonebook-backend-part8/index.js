@@ -5,6 +5,7 @@ const { GraphQLError } = require("graphql");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Person = require("./models/person");
+const User = require("./models/user");
 
 require("dotenv").config();
 
@@ -119,8 +120,8 @@ const resolvers = {
     },
     findPerson: async (root, args) => Person.findOne({ name: args.name }),
     me: (root, args, context) => {
-      return context.currentUser
-    }
+      return context.currentUser;
+    },
   },
   Person: {
     address: (root) => {
@@ -132,22 +133,29 @@ const resolvers = {
   },
   Mutation: {
     addPerson: async (root, args, context) => {
-      const person = new Person({ ...args });
-      const currentUser = context.currentUser
+      const { currentUser } = context;
 
-      if(!currentUser) {
-        throw new GraphQLError('not authenticated', {
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
           extensions: {
-            code: 'BAD_USER_INPUT'
-          }
-        })
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
+
+      const person = new Person({
+        name: args.name,
+        phone: args.phone,
+        street: args.street,
+        city: args.city,
+      });
 
       try {
         await person.save();
-        currentUser.friends = currentUser.friends.concat(person)
-        await currentUser.save()
+        currentUser.friends = currentUser.friends.concat(person);
+        await currentUser.save();
       } catch (error) {
+        console.error(error);
         throw new GraphQLError("Saving person failed", {
           extensions: {
             code: "BAD_USER_INPUT",
@@ -156,7 +164,7 @@ const resolvers = {
           },
         });
       }
-      return person.save();
+      return person;
     },
     editNumber: async (root, args) => {
       const person = await Person.findOne({ name: args.name });
@@ -176,7 +184,7 @@ const resolvers = {
       return person.save;
     },
     createUser: async (root, args) => {
-      const user = new UserActivation({ username: args.username });
+      const user = new User({ username: args.username });
 
       return user.save().catch((error) => {
         throw new GraphQLError("Creating the user failed", {
@@ -208,23 +216,25 @@ const resolvers = {
     },
     addAsFriend: async (root, args, { currentUser }) => {
       const isFriend = (person) =>
-        currentUser.friends.map(f => f._id.toString()).includes(person._id.toString())
+        currentUser.friends
+          .map((f) => f._id.toString())
+          .includes(person._id.toString());
 
-      if(!currentUser) {
-        throw new GraphQLError('wrong credentials', {
-          extensions: { code: 'BAD_USER_INPUT' }
-        })
+      if (!currentUser) {
+        throw new GraphQLError("wrong credentials", {
+          extensions: { code: "BAD_USER_INPUT" },
+        });
       }
 
-      const person = await Person.findOne({ name: args.name })
-      if ( !isFriend(person) ) {
-        currentUser.friends = currentUser.friends.concat(person)
+      const person = await Person.findOne({ name: args.name });
+      if (!isFriend(person)) {
+        currentUser.friends = currentUser.friends.concat(person);
       }
 
-      await currentUser.save()
+      await currentUser.save();
 
-      return currentUser
-    }
+      return currentUser;
+    },
   },
 };
 
@@ -236,16 +246,24 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null
+    const auth = req ? req.headers.authorization : null;
     if (auth && auth.startsWith('Bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring(7), process.env.JWT_SECRET
-      )
-      const currentUser = User
-        .findById(decodedToken.id).populate('friends')
-      return { currentUser }
+      try {
+        const decodedToken = jwt.verify(
+          auth.substring(7), process.env.JWT_SECRET
+        );
+        const currentUser = await User
+          .findById(decodedToken.id)
+          .populate('friends')
+        
+        return { currentUser }
+      } catch (error) {
+        console.error('Invalid Token', error.message)
+        return {}
+      }
     }
-  }
+    return {}
+  },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
