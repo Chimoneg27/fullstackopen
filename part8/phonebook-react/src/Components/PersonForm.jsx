@@ -9,20 +9,28 @@ const PersonForm = ({ setError }) => {
   const [city, setCity] = useState("");
 
   const [createPerson] = useMutation(CREATE_PERSON, {
-    refetchQueries: [ { query: ALL_PERSONS } ],
+    refetchQueries: [{ query: ALL_PERSONS }],
     onError: (error) => {
-        const messages = error.graphQLErrors.map(e => e.message).join('\n')
-        setError(messages)
-    }
-  }); // // with destructuring, we get the first element of the array returned by useMutation — the mutation function
+      const messages = error.graphQLErrors.map((e) => e.message).join("\n");
+      setError(messages);
+    },
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+        return { allPersons: allPersons.concat(response.data.addPerson) };
+      });
+    },
+  }); // with destructuring, we get the first element of the array returned by useMutation — the mutation function
 
   const submit = async (event) => {
     event.preventDefault();
 
-    await createPerson({ variables: { 
-      name, street, city,
-      phone: phone.length > 0 ? phone : undefined
-    } 
+    await createPerson({
+      variables: {
+        name,
+        street,
+        city,
+        phone: phone.length > 0 ? phone : undefined,
+      },
     }); // query variables recieve values when the query is made
     setName("");
     setPhone("");
