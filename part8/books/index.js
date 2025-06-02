@@ -1,6 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -27,7 +27,7 @@ const typeDefs = `
   type Mutation {
     addBook(
       title: String!
-      published: String!
+      published: Int!
       author: String!
       genres: [String!]!
     ): Book
@@ -57,7 +57,7 @@ const typeDefs = `
 
   type Book {
     title: String!
-    published: String!
+    published: Int!
     author: Author!
     genres: [String!]
     id: ID
@@ -89,8 +89,14 @@ const resolvers = {
         let filtered = {}; // starts empty
 
         if (args.author) {
-          // if args.author exists it add { author: "Author Name" }
-          filtered.author = args.author;
+          // Find the author by name to get their ObjectId
+          const author = await Author.findOne({ name: args.author });
+          if (author) {
+            filtered.author = author._id;
+          } else {
+            // If author doesn't exist, return empty array
+            return [];
+          }
         }
 
         if (args.genre) {
@@ -106,8 +112,8 @@ const resolvers = {
         throw new GraphQLError("Failed to fetch books", {
           extensions: {
             code: "INTERNAL_ERROR",
-            error: error.message
-          }
+            error: error.message,
+          },
         });
       }
     },
@@ -119,8 +125,8 @@ const resolvers = {
         throw new GraphQLError("Failed to fetch authors", {
           extensions: {
             code: "INTERNAL_ERROR",
-            error: error.message
-          }
+            error: error.message,
+          },
         });
       }
     },
@@ -128,17 +134,17 @@ const resolvers = {
   Book: {
     author: async (root) => {
       try {
-        return await Author.findOne({ name: root.author });
+        return await Author.findById(root.author);
       } catch (error) {
         console.error("Error resolving book author:", error);
         throw new GraphQLError("Failed to resolve book author");
       }
-    }
+    },
   },
   Author: {
     bookCount: async (root) => {
       try {
-        return await Book.countDocuments({ author: root.name });
+        return await Book.countDocuments({ author: root._id });
       } catch (error) {
         console.error("Error counting books for author:", error);
         return 0;
@@ -147,29 +153,34 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
-      const book = new Book({ ...args });
-      try {
-        let authorExists = await Author.findOne({ name: args.author });
+      let author = await Author.findOne({ name: args.author });
 
-        if (!authorExists) {
-          const newAuthor = new Author({
-            name: args.author,
-            born: null,
-          });
-          await newAuthor.save();
-        }
+      if (!author) {
+        author = new Author({ name: args.author });
+        await author.save();
+      }
+
+      let book = new Book({
+        title: args.title,
+        published: args.published,
+        author: author._id,
+        genres: args.genres,
+      });
+
+      try {
         await book.save();
       } catch (error) {
         console.error("Error adding book:", error);
-        throw new GraphQLError("saving book failed", {
+        throw new GraphQLError("Saving book failed", {
           extensions: {
             code: "BAD_USER_INPUT",
-            invalidArgs: args.author,
-            error,
+            error: error.message,
           },
         });
       }
-      return book;
+
+      
+      return book.populate("author");
     },
     editAuthor: async (root, args) => {
       try {
@@ -191,37 +202,39 @@ const resolvers = {
       }
     },
     createUser: async (root, args) => {
-      const user = new User({ username: args.username, favoriteGenre: args.favoriteGenre })
-      console.log("Creating user with args:", args)
-      return user.save()
-        .catch(error => {
-          throw new GraphQLError('Creating the user failed', {
-            extensions: {
-              code: 'BAD_USER_INPUT',
-              invalidArgs: args.username,
-              error
-            }
-          })
-        })
+      const user = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre,
+      });
+      console.log("Creating user with args:", args);
+      return user.save().catch((error) => {
+        throw new GraphQLError("Creating the user failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.username,
+            error,
+          },
+        });
+      });
     },
     login: async (root, args) => {
-      const user = await User.findOne({ username: args.username })
+      const user = await User.findOne({ username: args.username });
 
-      if ( !user || args.password !== 'secret' ) {
-        throw new GraphQLError('wrong credentials', {
+      if (!user || args.password !== "secret") {
+        throw new GraphQLError("wrong credentials", {
           extensions: {
-            code: 'BAD_USER_INPUT'
-          }
-        })
+            code: "BAD_USER_INPUT",
+          },
+        });
       }
 
       const userForToken = {
         username: user.username,
-        id: user._id
-      }
+        id: user._id,
+      };
 
-      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
-    }
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+    },
   },
 };
 
@@ -233,14 +246,16 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4001 },
   context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.startsWith('Bearer ')) {
+    const auth = req ? req.headers.authorization : null;
+    if (auth && auth.startsWith("Bearer ")) {
       const decodedToken = jwt.verify(
-        auth.substring(7), process.env.JWT_SECRET
-      )
-      const currentUser = await User
-        .findById(decodedToken.id).populate('favoriteGenre')
-      return { currentUser }
+        auth.substring(7),
+        process.env.JWT_SECRET
+      );
+      const currentUser = await User.findById(decodedToken.id).populate(
+        "favoriteGenre"
+      );
+      return { currentUser };
     }
   },
 }).then(({ url }) => {
