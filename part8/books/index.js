@@ -6,8 +6,8 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Book = require("./models/books");
 const Author = require("./models/author");
+const User = require("./models/user");
 const { GraphQLError } = require("graphql");
-const User = require("./models/user")
 
 require("dotenv").config();
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -23,102 +23,6 @@ mongoose
     console.log("error connection to MongoDB:", error.message);
   });
 
-let authors = [
-  {
-    name: "Robert Martin",
-    id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
-    born: 1952,
-  },
-  {
-    name: "Martin Fowler",
-    id: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
-    born: 1963,
-  },
-  {
-    name: "Fyodor Dostoevsky",
-    id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
-    born: 1821,
-  },
-  {
-    name: "Joshua Kerievsky", // birthyear not known
-    id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
-  },
-  {
-    name: "Sandi Metz", // birthyear not known
-    id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
-  },
-];
-
-/*
- * Suomi:
- * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
- * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
- *
- * English:
- * It might make more sense to associate a book with its author by storing the author's id in the context of the book instead of the author's name
- * However, for simplicity, we will store the author's name in connection with the book
- *
- * Spanish:
- * Podría tener más sentido asociar un libro con su autor almacenando la id del autor en el contexto del libro en lugar del nombre del autor
- * Sin embargo, por simplicidad, almacenaremos el nombre del autor en conexión con el libro
- */
-
-let books = [
-  {
-    title: "Clean Code",
-    published: 2008,
-    author: "Robert Martin",
-    id: "afa5b6f4-344d-11e9-a414-719c6709cf3e",
-    genres: ["refactoring"],
-  },
-  {
-    title: "Agile software development",
-    published: 2002,
-    author: "Robert Martin",
-    id: "afa5b6f5-344d-11e9-a414-719c6709cf3e",
-    genres: ["agile", "patterns", "design"],
-  },
-  {
-    title: "Refactoring, edition 2",
-    published: 2018,
-    author: "Martin Fowler",
-    id: "afa5de00-344d-11e9-a414-719c6709cf3e",
-    genres: ["refactoring"],
-  },
-  {
-    title: "Refactoring to patterns",
-    published: 2008,
-    author: "Joshua Kerievsky",
-    id: "afa5de01-344d-11e9-a414-719c6709cf3e",
-    genres: ["refactoring", "patterns"],
-  },
-  {
-    title: "Practical Object-Oriented Design, An Agile Primer Using Ruby",
-    published: 2012,
-    author: "Sandi Metz",
-    id: "afa5de02-344d-11e9-a414-719c6709cf3e",
-    genres: ["refactoring", "design"],
-  },
-  {
-    title: "Crime and punishment",
-    published: 1866,
-    author: "Fyodor Dostoevsky",
-    id: "afa5de03-344d-11e9-a414-719c6709cf3e",
-    genres: ["classic", "crime"],
-  },
-  {
-    title: "Demons",
-    published: 1872,
-    author: "Fyodor Dostoevsky",
-    id: "afa5de04-344d-11e9-a414-719c6709cf3e",
-    genres: ["classic", "revolution"],
-  },
-];
-
-/*
-  you can remove the placeholder query once your first one has been implemented 
-*/
-
 const typeDefs = `
   type Mutation {
     addBook(
@@ -129,7 +33,7 @@ const typeDefs = `
     ): Book
     editAuthor(
       name: String!
-      setBornTo: Int!
+      setBornTo: String!
     ): Author
     createUser(
       username: String!
@@ -177,31 +81,68 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    findAuthor: (root, args) => Author.findOne({ name: args.author }),
+    findAuthor: (root, args) => Author.findOne({ name: args.name }),
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      let filtered = {}; // starts empty
+      try {
+        let filtered = {}; // starts empty
 
-      if (args.author) {
-        // if args.author exists it add { author: "Author Name" }
-        filtered.author = args.author;
+        if (args.author) {
+          // if args.author exists it add { author: "Author Name" }
+          filtered.author = args.author;
+        }
+
+        if (args.genre) {
+          //if args.genre exists it adds { genres: {$in: ["genre"]} }
+          filtered.genres = { $in: [args.genre] };
+        }
+
+        const books = await Book.find(filtered);
+        console.log("Found books:", books);
+        return books;
+      } catch (error) {
+        console.error("Error in allBooks resolver:", error);
+        throw new GraphQLError("Failed to fetch books", {
+          extensions: {
+            code: "INTERNAL_ERROR",
+            error: error.message
+          }
+        });
       }
-
-      if (args.genre) {
-        //if args.genre exists it adds { genres: {$in: ["genre"]} }
-        filtered.genres = { $in: [args.genre] };
-      }
-
-      return await Book.find(filtered);
     },
     allAuthors: async (root, args) => {
-      return Author.find({});
+      try {
+        return await Author.find({});
+      } catch (error) {
+        console.error("Error in allAuthors resolver:", error);
+        throw new GraphQLError("Failed to fetch authors", {
+          extensions: {
+            code: "INTERNAL_ERROR",
+            error: error.message
+          }
+        });
+      }
     },
+  },
+  Book: {
+    author: async (root) => {
+      try {
+        return await Author.findOne({ name: root.author });
+      } catch (error) {
+        console.error("Error resolving book author:", error);
+        throw new GraphQLError("Failed to resolve book author");
+      }
+    }
   },
   Author: {
     bookCount: async (root) => {
-      return await Book.countDocuments({ author: root.name });
+      try {
+        return await Book.countDocuments({ author: root.name });
+      } catch (error) {
+        console.error("Error counting books for author:", error);
+        return 0;
+      }
     },
   },
   Mutation: {
@@ -219,6 +160,7 @@ const resolvers = {
         }
         await book.save();
       } catch (error) {
+        console.error("Error adding book:", error);
         throw new GraphQLError("saving book failed", {
           extensions: {
             code: "BAD_USER_INPUT",
@@ -238,6 +180,7 @@ const resolvers = {
         );
         return updatedAuthor;
       } catch (error) {
+        console.error("Error editing author:", error);
         throw new GraphQLError("saving birth date field failed", {
           extensions: {
             code: "BAD_USER_INPUT",
@@ -265,7 +208,7 @@ const resolvers = {
       const user = await User.findOne({ username: args.username })
 
       if ( !user || args.password !== 'secret' ) {
-        throw new GraphQLError('wrong crendentials', {
+        throw new GraphQLError('wrong credentials', {
           extensions: {
             code: 'BAD_USER_INPUT'
           }
