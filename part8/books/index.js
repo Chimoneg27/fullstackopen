@@ -73,6 +73,7 @@ const typeDefs = `
   type Query {
     bookCount: Int!
     authorCount: Int!
+    allGenres: [String]!
     findAuthor(name: String!): Author
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
@@ -86,21 +87,19 @@ const resolvers = {
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       try {
-        let filtered = {}; // starts empty
+        let filtered = {};
 
         if (args.author) {
-          // Find the author by name to get their ObjectId
+
           const author = await Author.findOne({ name: args.author });
           if (author) {
             filtered.author = author._id;
           } else {
-            // If author doesn't exist, return empty array
             return [];
           }
         }
 
         if (args.genre) {
-          //if args.genre exists it adds { genres: {$in: ["genre"]} }
           filtered.genres = { $in: [args.genre] };
         }
 
@@ -130,6 +129,14 @@ const resolvers = {
         });
       }
     },
+    allGenres: async () => {
+      const books = await Book.find({})
+      const genres = new Set()
+      books.forEach((book) => {
+        book.genres.forEach((genre) => genres.add(genre))
+      })
+      return Array.from(genres).sort()
+    }
   },
   Book: {
     author: async (root) => {
